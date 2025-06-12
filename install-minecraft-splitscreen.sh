@@ -70,22 +70,6 @@ ________EOF
         [ -f "$modfile" ] || wget -O "$modfile" "$url"
     done
 
-    # Download Fabric loader jar and manifest
-    if [ ! -f "$TEMP_DIR/fabric-loader-0.15.7.jar" ]; then
-        wget -O "$TEMP_DIR/fabric-loader-0.15.7.jar" "https://maven.fabricmc.net/net/fabricmc/fabric-loader/0.15.7/fabric-loader-0.15.7.jar"
-    fi
-    if [ ! -f "$TEMP_DIR/fabric-loader-0.15.7-1.21.5.json" ]; then
-        wget -O "$TEMP_DIR/fabric-loader-0.15.7-1.21.5.json" "https://meta.fabricmc.net/v2/versions/loader/1.21.5/0.15.7/profile/json"
-    fi
-
-    # Patch Fabric loader manifest to ensure correct id (for PollyMC compatibility)
-    if [ -f "$TEMP_DIR/fabric-loader-0.15.7-1.21.5.json" ]; then
-        id_val=$(jq -r '.id' "$TEMP_DIR/fabric-loader-0.15.7-1.21.5.json")
-        if [ "$id_val" != "fabric-loader-0.15.7-1.21.5" ]; then
-            jq '.id = "fabric-loader-0.15.7-1.21.5"' "$TEMP_DIR/fabric-loader-0.15.7-1.21.5.json" > "$TEMP_DIR/fabric-loader-0.15.7-1.21.5.json.tmp" && mv "$TEMP_DIR/fabric-loader-0.15.7-1.21.5.json.tmp" "$TEMP_DIR/fabric-loader-0.15.7-1.21.5.json"
-        fi
-    fi
-
     # Download Minecraft jar and json
     if [ ! -f "$TEMP_DIR/1.21.5.jar" ]; then
         if ! command -v jq &>/dev/null; then
@@ -169,9 +153,9 @@ ________________EOF
       "cachedRequires": [
         { "equals": "1.21.5", "uid": "net.minecraft" }
       ],
-      "cachedVersion": "0.15.7",
+      "cachedVersion": "0.16.14",
       "uid": "net.fabricmc.fabric-loader",
-      "version": "fabric-loader-0.15.7-1.21.5"
+      "version": "fabric-loader-0.16.14-1.21.5"
     }
   ],
   "formatVersion": 1
