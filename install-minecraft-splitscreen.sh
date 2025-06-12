@@ -9,14 +9,13 @@ pushd $targetDir
         chmod +x PollyMC-Linux-x86_64.AppImage
     fi
 
-    if [ ! -f "jdk-21/bin/java" ]; then
-        # download java 21
-        curl -L https://download.oracle.com/java/21/latest/jdk-21_linux-x64_bin.tar.gz | tar xz
-        # Move to jdk-21 if extracted as something else
-        JDK_EXTRACTED=$(ls -d jdk-21* | grep -v "jdk-21" | head -1)
-        if [ -n "$JDK_EXTRACTED" ] && [ "$JDK_EXTRACTED" != "jdk-21" ]; then
-            mv "$JDK_EXTRACTED" jdk-21
-        fi
+    # Detect system Java (prefer /usr/lib/jvm/default-runtime/bin/java, fallback to which java)
+    if [ -x /usr/lib/jvm/default-runtime/bin/java ]; then
+        JAVA_PATH="/usr/lib/jvm/default-runtime/bin/java"
+    elif [ -x /usr/lib/jvm/java-17-openjdk/bin/java ]; then
+        JAVA_PATH="/usr/lib/jvm/java-17-openjdk/bin/java"
+    else
+        JAVA_PATH="$(which java)"
     fi
 
     if [ ! -f pollymc.cfg ]; then
@@ -27,11 +26,13 @@ pushd $targetDir
             ConfigVersion=1.2
             FlameKeyShouldBeFetchedOnStartup=false
             IconTheme=pe_colored
-            JavaPath=jdk-21/bin/java
+            JavaPath=$JAVA_PATH
             Language=en_US
             LastHostname=$HOSTNAME
             MaxMemAlloc=4096
             MinMemAlloc=512
+            FirstRun=false
+            WizardComplete=true
 ________EOF
     fi
 
@@ -113,7 +114,7 @@ ________EOF
                     [General]
                     ConfigVersion=1.2
                     InstanceType=OneSix
-                    JavaPath=jdk-21/bin/java
+                    JavaPath=$JAVA_PATH
                     OverrideJavaLocation=true
                     iconKey=default
                     name=1.21.5-$i
