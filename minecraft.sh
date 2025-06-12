@@ -24,6 +24,37 @@ set +e  # Allow script to continue on errors for robustness
 export target=/tmp
 
 # =============================
+# Function: selfUpdate
+# =============================
+# Checks if this script is the latest version from GitHub. If not, downloads and replaces itself.
+selfUpdate() {
+    local repo_url="https://raw.githubusercontent.com/FlyingEwok/MinecraftSplitscreenSteamdeck/main/minecraft.sh"
+    local tmpfile
+    tmpfile=$(mktemp)
+    # Download the latest version
+    if ! curl -fsSL "$repo_url" -o "$tmpfile"; then
+        echo "[Self-Update] Failed to check for updates." >&2
+        rm -f "$tmpfile"
+        return
+    fi
+    # Compare with current script
+    if ! cmp -s "$tmpfile" "$0"; then
+        echo "[Self-Update] New version found. Updating..."
+        # Preserve permissions and atomically replace
+        chmod --reference="$0" "$tmpfile"
+        mv "$tmpfile" "$0"
+        echo "[Self-Update] Update complete. Please re-run the script."
+        exit 0
+    else
+        rm -f "$tmpfile"
+        # echo "[Self-Update] Already up to date."
+    fi
+}
+
+# Call selfUpdate at the very start of the script
+selfUpdate
+
+# =============================
 # Function: nestedPlasma
 # =============================
 # Launches a nested KDE Plasma Wayland session and sets up Minecraft autostart.
