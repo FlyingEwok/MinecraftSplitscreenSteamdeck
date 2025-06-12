@@ -20,7 +20,7 @@ set -e
 
 # --------- CONFIGURABLE VARIABLES ---------
 POLLYMC_DIR="$HOME/.local/share/PollyMC"
-POLLYMC_APPIMAGE_URL="https://github.com/PolyMC/PolyMC/releases/download/7.0/PolyMC-Linux-7.0-x86_64.AppImage"
+POLLYMC_APPIMAGE_URL="https://github.com/fn2006/PollyMC/releases/download/8.0/PollyMC-Linux-x86_64.AppImage"
 SPLITSCREEN_MOD_URL="https://cdn.modrinth.com/data/yJgqfSDR/versions/9U4TVf3r/splitscreen-0.9.0%2B1.21.5.jar"
 CONTROLLER_MOD_URL="https://media.forgecdn.net/files/6413/241/controllable-0.19.0-mc1.21.5-fabric.jar"
 IN_GAME_ACCOUNT_SWITCHER_URL="https://cdn.modrinth.com/data/cudtvDnd/versions/96FYffnc/IAS-Fabric-1.21.5-9.0.2.jar"
