@@ -103,8 +103,8 @@ ________EOF
                 cp "$mod" ".minecraft/mods/"
             done
 
-            # Copy Fabric loader jar and manifest
-            cp "$TEMP_DIR/fabric-loader-0.15.7.jar" ".minecraft/versions/fabric-loader-0.15.7-1.21.5/fabric-loader-0.15.7.jar"
+            # Copy Fabric loader jar and manifest (ensure correct naming)
+            cp "$TEMP_DIR/fabric-loader-0.15.7.jar" ".minecraft/versions/fabric-loader-0.15.7-1.21.5/fabric-loader-0.15.7-1.21.5.jar"
             cp "$TEMP_DIR/fabric-loader-0.15.7-1.21.5.json" ".minecraft/versions/fabric-loader-0.15.7-1.21.5/fabric-loader-0.15.7-1.21.5.json"
 
             # Copy Minecraft jar and json
