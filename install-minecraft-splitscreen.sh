@@ -147,6 +147,39 @@ EOF
     mkdir -p "$INSTANCE_DIR/.minecraft/mods"
 done
 
+# --------- DOWNLOAD MINECRAFT AND FABRIC LOADER FOR EACH INSTANCE ---------
+echo "[INFO] Downloading Minecraft $MINECRAFT_VERSION and Fabric Loader for PollyMC splitscreen setup..."
+FABRIC_INSTALLER_URL="https://maven.fabricmc.net/net/fabricmc/fabric-installer/1.0.0/fabric-installer-1.0.0.jar"
+FABRIC_INSTALLER_JAR="$TEMP_DIR/fabric-installer.jar"
+curl -L "$FABRIC_INSTALLER_URL" -o "$FABRIC_INSTALLER_JAR"
+
+INSTANCE1_DIR="$POLLYMC_DIR/instances/$MINECRAFT_VERSION-1"
+
+for i in 1 2 3 4; do
+    INSTANCE_DIR="$POLLYMC_DIR/instances/$MINECRAFT_VERSION-$i"
+    if [ "$i" -eq 1 ]; then
+        # Download Minecraft and Fabric loader for instance 1 only if not already present
+        if [ ! -f "$INSTANCE1_DIR/.minecraft/versions/$MINECRAFT_VERSION/$MINECRAFT_VERSION.jar" ]; then
+            echo "[INFO] Downloading Minecraft and Fabric for instance 1..."
+            "$JAVA_PATH" -jar "$FABRIC_INSTALLER_JAR" client -mcversion $MINECRAFT_VERSION -dir "$INSTANCE1_DIR/.minecraft" --noprofile --downloadMinecraft
+            "$POLLYMC_DIR/PollyMC-Linux-x86_64.AppImage" --launch "$MINECRAFT_VERSION-1" --no-gui --quit || true
+        else
+            echo "[INFO] Minecraft already exists for instance 1, skipping download."
+        fi
+    else
+        # For instances 2-4, copy Minecraft from instance 1 if it exists
+        if [ -d "$INSTANCE1_DIR/.minecraft/versions/$MINECRAFT_VERSION" ]; then
+            echo "[INFO] Copying Minecraft core files from instance 1 to instance $i..."
+            rsync -a --exclude 'mods' --exclude 'saves' --exclude 'options.txt' --exclude 'logs' --exclude 'crash-reports' --exclude 'screenshots' --exclude 'resourcepacks' --exclude 'shaderpacks' "$INSTANCE1_DIR/.minecraft/" "$INSTANCE_DIR/.minecraft/"
+        else
+            echo "[WARN] Minecraft not found in instance 1. Skipping copy for instance $i."
+        fi
+        # Install Fabric loader for this instance (will not re-download Minecraft)
+        "$JAVA_PATH" -jar "$FABRIC_INSTALLER_JAR" client -mcversion $MINECRAFT_VERSION -dir "$INSTANCE_DIR/.minecraft" --noprofile
+        "$POLLYMC_DIR/PollyMC-Linux-x86_64.AppImage" --launch "$MINECRAFT_VERSION-$i" --no-gui --quit || true
+    fi
+done
+
 # --------- (OPTIONAL) CREATE DESKTOP SHORTCUT ---------
 # Create a desktop shortcut for easy launching of the splitscreen setup
 echo "[INFO] Creating desktop shortcut..."
