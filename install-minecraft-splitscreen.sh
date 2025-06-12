@@ -101,9 +101,14 @@ ________EOF
         rm "$TEMP_DIR/version_manifest.json"
     fi
 
+    # Download Fabric installer jar
+    if [ ! -f "$TEMP_DIR/fabric-installer-0.11.2.jar" ]; then
+        wget -O "$TEMP_DIR/fabric-installer-0.11.2.jar" "https://maven.fabricmc.net/net/fabricmc/fabric-installer/0.11.2/fabric-installer-0.11.2.jar"
+    fi
+
     # create the 4 game instances for 1.21.5
     for i in {1..4}; do
-        mkdir -p "instances/1.21.5-$i/.minecraft/mods" "instances/1.21.5-$i/.minecraft/config" "instances/1.21.5-$i/.minecraft/versions/fabric-loader-0.15.7-1.21.5" "instances/1.21.5-$i/.minecraft/versions/1.21.5"
+        mkdir -p "instances/1.21.5-$i/.minecraft/mods" "instances/1.21.5-$i/.minecraft/config" "instances/1.21.5-$i/.minecraft/versions/1.21.5"
         pushd "instances/1.21.5-$i"
 
             # Copy all mods
@@ -111,9 +116,8 @@ ________EOF
                 cp "$mod" ".minecraft/mods/"
             done
 
-            # Copy Fabric loader jar and manifest (ensure correct naming)
-            cp "$TEMP_DIR/fabric-loader-0.15.7.jar" ".minecraft/versions/fabric-loader-0.15.7-1.21.5/fabric-loader-0.15.7-1.21.5.jar"
-            cp "$TEMP_DIR/fabric-loader-0.15.7-1.21.5.json" ".minecraft/versions/fabric-loader-0.15.7-1.21.5/fabric-loader-0.15.7-1.21.5.json"
+            # Use Fabric installer to set up loader in this instance
+            "$JAVA_PATH" -jar "$TEMP_DIR/fabric-installer-0.11.2.jar" client -dir ".minecraft" -mcversion 1.21.5 -loader 0.15.7 -noprofile
 
             # Copy Minecraft jar and json
             cp "$TEMP_DIR/1.21.5.jar" ".minecraft/versions/1.21.5/1.21.5.jar"
