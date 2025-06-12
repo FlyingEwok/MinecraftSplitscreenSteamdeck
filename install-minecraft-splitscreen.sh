@@ -44,31 +44,15 @@ pushd $targetDir
 ________EOF
     fi
 
-    # Download Minecraft jar and json
-    if [ ! -f "$TEMP_DIR/1.21.5.jar" ]; then
-        if ! command -v jq &>/dev/null; then
-          echo "Error: jq is required but not installed. Please run: sudo pacman -S jq" >&2
-          exit 1
-        fi
-        curl -sSL "https://piston-meta.mojang.com/mc/game/version_manifest_v2.json" -o "$TEMP_DIR/version_manifest.json"
-        VERSION_URL=$(jq -r --arg VER "1.21.5" '.versions[] | select(.id==$VER) | .url' "$TEMP_DIR/version_manifest.json")
-        curl -sSL "$VERSION_URL" -o "$TEMP_DIR/mc_version.json"
-        JAR_URL=$(jq -r '.downloads.client.url' "$TEMP_DIR/mc_version.json")
-        curl -sSL "$JAR_URL" -o "$TEMP_DIR/1.21.5.jar"
-        mv "$TEMP_DIR/mc_version.json" "$TEMP_DIR/1.21.5.json"
-        rm "$TEMP_DIR/version_manifest.json"
-    fi
-
-    # Download Fabric installer jar
-    if [ ! -f "$TEMP_DIR/fabric-installer-0.11.2.jar" ]; then
-        wget -O "$TEMP_DIR/fabric-installer-0.11.2.jar" "https://maven.fabricmc.net/net/fabricmc/fabric-installer/0.11.2/fabric-installer-0.11.2.jar"
-    fi
-
-    # --- Use sampleInstance as template for splitscreen instances ---
+    # --- Download sampleInstance template if not present ---
     TEMPLATE_INSTANCE="sampleInstance"
     if [ ! -d "$TEMPLATE_INSTANCE" ]; then
-        echo "ERROR: sampleInstance directory not found. Please create a working instance named 'sampleInstance' in PollyMC and re-run this script." >&2
-        exit 1
+        echo "sampleInstance not found, downloading from GitHub..."
+        wget -O sampleInstance.zip "https://github.com/FlyingEwok/MinecraftSplitscreenSteamdeck/archive/refs/heads/main.zip"
+        unzip -q sampleInstance.zip "MinecraftSplitscreenSteamdeck-main/sampleInstance/*"
+        rm -rf "$TEMPLATE_INSTANCE"
+        mv MinecraftSplitscreenSteamdeck-main/sampleInstance "$TEMPLATE_INSTANCE"
+        rm -rf MinecraftSplitscreenSteamdeck-main sampleInstance.zip
     fi
 
     for i in {1..4}; do
@@ -81,9 +65,6 @@ ________EOF
 
     # --- Download accounts.json for splitscreen ---
     wget -O accounts.json "https://raw.githubusercontent.com/FlyingEwok/MinecraftSplitscreenSteamdeck/main/accounts.json"
-
-    # Clean up temp dir
-    rm -rf "$TEMP_DIR"
 
     # download the launch wrapper
     rm -f minecraft.sh
