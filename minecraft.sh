@@ -116,7 +116,7 @@ getControllerCount() {
 setSplitscreenModeForPlayer() {
     local player=$1
     local numberOfControllers=$2
-    local config_path="~/.local/share/PollyMC/instances/1.21.5-${player}/.minecraft/config/splitscreen.properties"
+    local config_path="$HOME/.local/share/PollyMC/instances/1.21.5-${player}/.minecraft/config/splitscreen.properties"
     mkdir -p "$(dirname $config_path)"
     local mode="FULLSCREEN"
     # Decide the splitscreen mode for this player based on total controllers
