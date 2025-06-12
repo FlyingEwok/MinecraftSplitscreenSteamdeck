@@ -55,10 +55,13 @@ ________EOF
         rm -rf MinecraftSplitscreenSteamdeck-main sampleInstance.zip
     fi
 
+    # Ensure the instances directory exists
+    mkdir -p "$targetDir/instances"
+
     for i in {1..4}; do
         DEST="$targetDir/instances/1.21.5-$i"
         rm -rf "$DEST"
-        cp -a "$TEMPLATE_INSTANCE" "$DEST"
+        cp -a "$targetDir/$TEMPLATE_INSTANCE" "$DEST"
         # Update instance.cfg name for each instance
         sed -i "s/^name=.*/name=1.21.5-$i/" "$DEST/instance.cfg"
     done
