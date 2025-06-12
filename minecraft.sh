@@ -1,21 +1,24 @@
 #!/bin/bash
 
+set +e  # Allow script to continue on errors for robustness
+
 # =============================
-# Minecraft Splitscreen Launcher for Steam Deck
+# Minecraft Splitscreen Launcher for Steam Deck & Linux
 # =============================
-# This script launches 1–4 Minecraft instances in splitscreen mode on a Steam Deck,
-# using a nested KDE Plasma session and a splitscreen mod. It handles controller detection,
-# per-instance mod config, KDE panel hiding/restoring, and reliable autostart in a nested session.
+# This script launches 1–4 Minecraft instances in splitscreen mode.
+# On Steam Deck Game Mode, it launches a nested KDE Plasma session for clean splitscreen.
+# On desktop mode, it launches Minecraft instances directly.
+# Handles controller detection, per-instance mod config, KDE panel hiding/restoring, and reliable autostart in a nested session.
 #
 # HOW IT WORKS:
-# 1. If not already in a Plasma session, launches a nested Plasma Wayland session.
+# 1. If in Steam Deck Game Mode, launches a nested Plasma Wayland session (if not already inside).
 # 2. Sets up an autostart .desktop file to re-invoke itself inside the nested session.
 # 3. Detects how many controllers are connected (1–4, with Steam Input quirks handled).
 # 4. For each player, writes the correct splitscreen mod config and launches a Minecraft instance.
 # 5. Hides KDE panels for a clean splitscreen experience (by killing plasmashell), then restores them.
 # 6. Logs out of the nested session when done.
 #
-# NOTE: This script is heavily commented for clarity and future maintainers!
+# NOTE: This script is robust and heavily commented for clarity and future maintainers!
 
 # Set a temporary directory for intermediate files (used for wrappers, etc)
 export target=/tmp
@@ -24,14 +27,14 @@ export target=/tmp
 # Function: nestedPlasma
 # =============================
 # Launches a nested KDE Plasma Wayland session and sets up Minecraft autostart.
-# This is needed so Minecraft can run in a clean, isolated desktop environment
-# (avoiding SteamOS overlays, etc). The autostart .desktop file ensures Minecraft
-# launches automatically inside the nested session.
+# Needed so Minecraft can run in a clean, isolated desktop environment (avoiding SteamOS overlays, etc).
+# The autostart .desktop file ensures Minecraft launches automatically inside the nested session.
 nestedPlasma() {
     # Unset variables that may interfere with launching a nested session
     unset LD_PRELOAD XDG_DESKTOP_PORTAL_DIR XDG_SEAT_PATH XDG_SESSION_PATH
     # Get current screen resolution (e.g., 1280x800)
-    RES=$(xdpyinfo | awk '/dimensions/{print $2}')
+    RES=$(xdpyinfo 2>/dev/null | awk '/dimensions/{print $2}')
+    [ -z "$RES" ] && RES="1280x800"
     # Create a wrapper for kwin_wayland with the correct resolution
     cat <<EOF > $target/kwin_wayland_wrapper
 #!/bin/bash
@@ -39,9 +42,7 @@ nestedPlasma() {
 EOF
     chmod +x $target/kwin_wayland_wrapper
     export PATH=$target:$PATH
-
     # Write an autostart .desktop file that will re-invoke this script with a special argument
-    # This ensures Minecraft launches automatically inside the nested session
     SCRIPT_PATH="$(readlink -f "$0")"
     mkdir -p ~/.config/autostart
     cat <<EOF > ~/.config/autostart/minecraft-launch.desktop
@@ -51,9 +52,8 @@ Exec=$SCRIPT_PATH launchFromPlasma
 Type=Application
 X-KDE-AutostartScript=true
 EOF
-
-    # Start the nested KDE Plasma Wayland session (this blocks until session ends)
-    dbus-run-session startplasma-wayland
+    # Start nested Plasma session (never returns)
+    exec dbus-run-session startplasma-wayland
 }
 
 # =============================
@@ -72,11 +72,20 @@ launchGame() {
 # =============================
 # Function: hidePanels
 # =============================
-# Kills plasmashell to remove all KDE panels and widgets. This is a brute-force workaround
+# Kills all plasmashell processes to remove KDE panels and widgets. This is a brute-force workaround
 # that works even in nested Plasma Wayland sessions, where scripting APIs may not work.
 hidePanels() {
-    # Kill plasmashell to remove all panels (Wayland workaround)
+    # Attempt to kill all plasmashell processes for the current user/session
     pkill plasmashell
+    sleep 1
+    if pgrep -u "$USER" plasmashell >/dev/null; then
+        killall plasmashell
+        sleep 1
+    fi
+    if pgrep -u "$USER" plasmashell >/dev/null; then
+        pkill -9 plasmashell
+        sleep 1
+    fi
 }
 
 # =============================
@@ -84,9 +93,7 @@ hidePanels() {
 # =============================
 # Restarts plasmashell to restore all KDE panels and widgets after gameplay.
 restorePanels() {
-    # Restart plasmashell to restore panels
     nohup plasmashell >/dev/null 2>&1 &
-    # Wait a bit for it to come back (avoid race conditions)
     sleep 2
 }
 
@@ -143,9 +150,6 @@ setSplitscreenModeForPlayer() {
     echo -e "gap=1\nmode=$mode" > "$config_path"
     sync
     sleep 0.5
-    # Log for debugging (shows what was written)
-    echo "[DEBUG] splitscreen.properties for player $player (controllers: $numberOfControllers):" >> "$(dirname "$0")/minecraft.sh.log"
-    cat "$config_path" >> "$(dirname "$0")/minecraft.sh.log"
 }
 
 # =============================
@@ -160,32 +164,61 @@ launchGames() {
         setSplitscreenModeForPlayer "$player" "$numberOfControllers" # Write config for this player
         launchGame "1.21.5-$player" "P$player" # Launch Minecraft instance for this player
     done
-    #splitScreen "Minecraft"  # Commented out: mod handles window placement
     wait # Wait for all Minecraft instances to exit
     restorePanels # Bring back KDE panels
     sleep 2 # Give time for panels to reappear
 }
 
 # =============================
+# Function: isSteamDeckGameMode
+# =============================
+# Returns 0 if running on Steam Deck in Game Mode, 1 otherwise.
+isSteamDeckGameMode() {
+    local dmi_file="/sys/class/dmi/id/product_name"
+    local dmi_contents=""
+    if [ -f "$dmi_file" ]; then
+        dmi_contents="$(cat "$dmi_file" 2>/dev/null)"
+    fi
+    if echo "$dmi_contents" | grep -Ei 'Steam Deck|Jupiter' >/dev/null; then
+        if [ "$XDG_SESSION_DESKTOP" = "gamescope" ] && [ "$XDG_CURRENT_DESKTOP" = "gamescope" ]; then
+            return 0
+        fi
+        if pgrep -af 'steam' | grep -q '\-gamepadui'; then
+            return 0
+        fi
+    else
+        # Fallback: If both XDG vars are gamescope and user is deck, assume Steam Deck Game Mode
+        if [ "$XDG_SESSION_DESKTOP" = "gamescope" ] && [ "$XDG_CURRENT_DESKTOP" = "gamescope" ] && [ "$USER" = "deck" ]; then
+            return 0
+        fi
+        # Additional fallback: nested session (gamescope+KDE, user deck)
+        if [ "$XDG_SESSION_DESKTOP" = "gamescope" ] && [ "$XDG_CURRENT_DESKTOP" = "KDE" ] && [ "$USER" = "deck" ]; then
+            return 0
+        fi
+    fi
+    return 1
+}
+
+# =============================
 # MAIN LOGIC: Entry Point
 # =============================
-# Handles autostart, nested session, and launching. This block ensures the script
-# works both when run directly and when autostarted inside the nested session.
-(
-    # Log every invocation for debugging
-    echo "$(date) - Script called with $# arguments: $@" >> ~/minecraft-launch.log
-
+# Universal: Steam Deck Game Mode = nested KDE, else just launch on current desktop
+if isSteamDeckGameMode; then
     if [ "$1" = launchFromPlasma ]; then
-        # If autostarted inside nested session, remove autostart file so it doesn't relaunch
+        # Inside nested Plasma session: launch Minecraft splitscreen and logout when done
         rm ~/.config/autostart/minecraft-launch.desktop
-        launchGames # Launch Minecraft instances
-        # Log out of nested Plasma session after games close
-        qdbus org.kde.Shutdown /Shutdown org.kde.Shutdown.logout
-    elif xwininfo -root -tree | grep -q plasmashell; then
-        # If already in a Plasma session, just launch games (no nesting needed)
         launchGames
+        qdbus org.kde.Shutdown /Shutdown org.kde.Shutdown.logout
     else
-        # Otherwise, start a nested Plasma session (for clean environment)
+        # Not yet in nested session: start it
         nestedPlasma
     fi
-)
+else
+    # Not in Game Mode: just launch Minecraft instances directly
+    numberOfControllers=$(getControllerCount)
+    for player in $(seq 1 $numberOfControllers); do
+        setSplitscreenModeForPlayer "$player" "$numberOfControllers"
+        launchGame "1.21.5-$player" "P$player"
+    done
+    wait
+fi
