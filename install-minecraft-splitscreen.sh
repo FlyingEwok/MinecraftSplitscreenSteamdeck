@@ -9,13 +9,21 @@ pushd $targetDir
         chmod +x PollyMC-Linux-x86_64.AppImage
     fi
 
-    # Detect system Java (prefer /usr/lib/jvm/default-runtime/bin/java, fallback to which java)
-    if [ -x /usr/lib/jvm/default-runtime/bin/java ]; then
-        JAVA_PATH="/usr/lib/jvm/default-runtime/bin/java"
+    # Detect system Java (prefer Java 21, then Java 17, then which java)
+    if [ -x /usr/lib/jvm/java-21-openjdk/bin/java ]; then
+        JAVA_PATH="/usr/lib/jvm/java-21-openjdk/bin/java"
     elif [ -x /usr/lib/jvm/java-17-openjdk/bin/java ]; then
         JAVA_PATH="/usr/lib/jvm/java-17-openjdk/bin/java"
+    elif [ -x /usr/lib/jvm/default-runtime/bin/java ]; then
+        JAVA_PATH="/usr/lib/jvm/default-runtime/bin/java"
     else
         JAVA_PATH="$(which java)"
+    fi
+
+    # Check if Java is available and executable
+    if [ -z "$JAVA_PATH" ] || [ ! -x "$JAVA_PATH" ]; then
+        echo "Error: Java 17 or 21 is not installed or not found in a standard location. Please install OpenJDK 17 or 21 with: sudo pacman -S jdk21-openjdk jdk17-openjdk" >&2
+        exit 1
     fi
 
     if [ ! -f pollymc.cfg ]; then
@@ -175,13 +183,13 @@ EOF
 
 popd
 
-    # add the launch wrapper to Steam
-    if ! grep -q local/share/PollyMC/minecraft ~/.steam/steam/userdata/*/config/shortcuts.vdf; then
-        steam -shutdown
-        while pgrep -F ~/.steam/steam.pid; do
-            sleep 1
-        done
-        [ -f shortcuts-backup.tar.xz ] || tar cJf shortcuts-backup.tar.xz ~/.steam/steam/userdata/*/config/shortcuts.vdf
-        curl https://raw.githubusercontent.com/ArnoldSmith86/minecraft-splitscreen/refs/heads/main/add-to-steam.py | python
-        nohup steam &
-    fi
+    # # add the launch wrapper to Steam
+    # if ! grep -q local/share/PollyMC/minecraft ~/.steam/steam/userdata/*/config/shortcuts.vdf; then
+    #     steam -shutdown
+    #     while pgrep -F ~/.steam/steam.pid; do
+    #         sleep 1
+    #     done
+    #     [ -f shortcuts-backup.tar.xz ] || tar cJf shortcuts-backup.tar.xz ~/.steam/steam/userdata/*/config/shortcuts.vdf
+    #     curl https://raw.githubusercontent.com/ArnoldSmith86/minecraft-splitscreen/refs/heads/main/add-to-steam.py | python
+    #     nohup steam &
+    # fi
