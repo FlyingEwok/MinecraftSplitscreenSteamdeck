@@ -161,17 +161,8 @@ EOF
         popd
     done
 
-    # --- Create accounts.json with 4 offline accounts ---
-    if [ ! -f "accounts.json" ]; then
-        sed 's/^            //' <<________EOF > accounts.json
-            [
-                {"type":"offline","username":"P1","uuid":"00000000-0000-0000-0000-000000000001"},
-                {"type":"offline","username":"P2","uuid":"00000000-0000-0000-0000-000000000002"},
-                {"type":"offline","username":"P3","uuid":"00000000-0000-0000-0000-000000000003"},
-                {"type":"offline","username":"P4","uuid":"00000000-0000-0000-0000-000000000004"}
-            ]
-________EOF
-    fi
+    # --- Download accounts.json for splitscreen ---
+    wget -O accounts.json "https://raw.githubusercontent.com/FlyingEwok/MinecraftSplitscreenSteamdeck/main/accounts.json"
 
     # Clean up temp dir
     rm -rf "$TEMP_DIR"
