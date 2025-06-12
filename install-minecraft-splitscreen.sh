@@ -44,32 +44,6 @@ pushd $targetDir
 ________EOF
     fi
 
-    # Download all mods and jars once to a temp dir
-    TEMP_DIR=$(mktemp -d)
-    MOD_URLS=(
-      "https://cdn.modrinth.com/data/yJgqfSDR/versions/9U4TVf3r/splitscreen-0.9.0%2B1.21.5.jar"
-      "https://media.forgecdn.net/files/6413/241/controllable-0.19.0-mc1.21.5-fabric.jar"
-      "https://cdn.modrinth.com/data/cudtvDnd/versions/96FYffnc/IAS-Fabric-1.21.5-9.0.2.jar"
-      "https://cdn.modrinth.com/data/mOgUt4GM/versions/T7GjZmwP/modmenu-14.0.0-rc.2.jar"
-      "https://cdn.modrinth.com/data/AANobbMI/versions/DA250htH/sodium-fabric-0.6.13%2Bmc1.21.5.jar"
-      "https://cdn.modrinth.com/data/gvQqBUqZ/versions/VWYoZjBF/lithium-fabric-0.16.2%2Bmc1.21.5.jar"
-      "https://cdn.modrinth.com/data/PtjYWJkn/versions/E5w6eZNE/sodium-extra-fabric-0.6.3%2B1.21.5.jar"
-      "https://cdn.modrinth.com/data/1eAoo2KR/versions/5yBEzonb/yet_another_config_lib_v3-3.6.6%2B1.21.5-fabric.jar"
-      "https://cdn.modrinth.com/data/YL57xq9U/versions/U6evbjd0/iris-fabric-1.8.11%2Bmc1.21.5.jar"
-      "https://cdn.modrinth.com/data/3IuO68q1/versions/JyVlkrSf/puzzle-fabric-2.1.0%2B1.21.5.jar"
-      "https://cdn.modrinth.com/data/uXXizFIs/versions/CtMpt7Jr/ferritecore-8.0.0-fabric.jar"
-      "https://cdn.modrinth.com/data/NNAgCjsB/versions/29GV7fju/entityculling-fabric-1.7.4-mc1.21.5.jar"
-      "https://cdn.modrinth.com/data/yBW8D80W/versions/STvJaSpP/lambdynamiclights-4.2.7%2B1.21.5.jar"
-      "https://cdn.modrinth.com/data/pSfNeCCY/versions/UX9XhQ6r/name-visibility-2.0.2.jar"
-      "https://cdn.modrinth.com/data/iAiqcykM/versions/HZHRCuLM/justzoom_fabric_2.1.0_MC_1.21.5.jar"
-      "https://cdn.modrinth.com/data/aEK1KhsC/versions/PeVUcOGT/fullbrightnesstoggle-1.21.5-4.3.jar"
-      "https://cdn.modrinth.com/data/dZ1APLkO/versions/UUtG1Pw2/old-combat-mod-1.1.1.jar"
-    )
-    for url in "${MOD_URLS[@]}"; do
-        modfile="$TEMP_DIR/$(basename "${url%%\?*}")"
-        [ -f "$modfile" ] || wget -O "$modfile" "$url"
-    done
-
     # Download Minecraft jar and json
     if [ ! -f "$TEMP_DIR/1.21.5.jar" ]; then
         if ! command -v jq &>/dev/null; then
@@ -90,83 +64,19 @@ ________EOF
         wget -O "$TEMP_DIR/fabric-installer-0.11.2.jar" "https://maven.fabricmc.net/net/fabricmc/fabric-installer/0.11.2/fabric-installer-0.11.2.jar"
     fi
 
-    # create the 4 game instances for 1.21.5
+    # --- Use sampleInstance as template for splitscreen instances ---
+    TEMPLATE_INSTANCE="sampleInstance"
+    if [ ! -d "$TEMPLATE_INSTANCE" ]; then
+        echo "ERROR: sampleInstance directory not found. Please create a working instance named 'sampleInstance' in PollyMC and re-run this script." >&2
+        exit 1
+    fi
+
     for i in {1..4}; do
-        mkdir -p "instances/1.21.5-$i/.minecraft/mods" "instances/1.21.5-$i/.minecraft/config" "instances/1.21.5-$i/.minecraft/versions/1.21.5"
-        pushd "instances/1.21.5-$i"
-
-            # Copy all mods
-            for mod in "$TEMP_DIR"/*.jar; do
-                cp "$mod" ".minecraft/mods/"
-            done
-
-            # options.txt
-            if [ ! -f ".minecraft/options.txt" ]; then
-                echo -e "onboardAccessibility:false\nskipMultiplayerWarning:true\ntutorialStep:none" > .minecraft/options.txt
-            fi
-
-            # instance.cfg
-            if [ ! -f "instance.cfg" ]; then
-                sed 's/^                    //' <<________________EOF > "instance.cfg"
-                    [General]
-                    ConfigVersion=1.2
-                    InstanceType=OneSix
-                    JavaPath=$JAVA_PATH
-                    OverrideJavaLocation=true
-                    iconKey=default
-                    name=1.21.5-$i
-________________EOF
-            fi
-
-            # mmc-pack.json
-            if [ ! -f "mmc-pack.json" ]; then
-                cat <<EOF > "mmc-pack.json"
-{
-  "components": [
-    {
-      "cachedName": "LWJGL 3",
-      "cachedVersion": "3.3.1",
-      "cachedVolatile": true,
-      "dependencyOnly": true,
-      "uid": "org.lwjgl3",
-      "version": "3.3.1"
-    },
-    {
-      "cachedName": "Minecraft",
-      "cachedRequires": [
-        { "suggests": "3.3.1", "uid": "org.lwjgl3" }
-      ],
-      "cachedVersion": "1.21.5",
-      "important": true,
-      "uid": "net.minecraft",
-      "version": "1.21.5"
-    },
-    {
-      "cachedName": "Intermediary Mappings",
-      "cachedRequires": [
-        { "equals": "1.21.5", "uid": "net.minecraft" }
-      ],
-      "cachedVersion": "1.21.5",
-      "uid": "net.fabricmc.intermediary",
-      "version": "1.21.5"
-    },
-    {
-      "cachedName": "Fabric Loader",
-      "cachedRequires": [
-        { "equals": "1.21.5", "uid": "net.minecraft" },
-        { "equals": "1.21.5", "uid": "net.fabricmc.intermediary" }
-      ],
-      "cachedVersion": "0.16.14",
-      "uid": "net.fabricmc.fabric-loader",
-      "version": "fabric-loader-0.16.14-1.21.5"
-    }
-  ],
-  "formatVersion": 1
-}
-EOF
-            fi
-
-        popd
+        DEST="instances/1.21.5-$i"
+        rm -rf "$DEST"
+        cp -a "$TEMPLATE_INSTANCE" "$DEST"
+        # Update instance.cfg name for each instance
+        sed -i "s/^name=.*/name=1.21.5-$i/" "$DEST/instance.cfg"
     done
 
     # --- Download accounts.json for splitscreen ---
