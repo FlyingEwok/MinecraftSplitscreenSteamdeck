@@ -71,16 +71,17 @@ ________EOF
 
     # Download Minecraft jar and json
     if [ ! -f "$TEMP_DIR/1.21.5.jar" ]; then
-        if ! command -v jq &>/dev/null; then
-          sudo apt-get update && sudo apt-get install -y jq
-        fi
-        curl -sSL "https://piston-meta.mojang.com/mc/game/version_manifest_v2.json" -o "$TEMP_DIR/version_manifest.json"
-        VERSION_URL=$(jq -r --arg VER "1.21.5" '.versions[] | select(.id==$VER) | .url' "$TEMP_DIR/version_manifest.json")
-        curl -sSL "$VERSION_URL" -o "$TEMP_DIR/mc_version.json"
-        JAR_URL=$(jq -r '.downloads.client.url' "$TEMP_DIR/mc_version.json")
-        curl -sSL "$JAR_URL" -o "$TEMP_DIR/1.21.5.jar"
-        mv "$TEMP_DIR/mc_version.json" "$TEMP_DIR/1.21.5.json"
-        rm "$TEMP_DIR/version_manifest.json"
+    if ! command -v jq &>/dev/null; then
+      echo "Error: jq is required but not installed. Please run: sudo pacman -S jq" >&2
+      exit 1
+    fi
+    curl -sSL "https://piston-meta.mojang.com/mc/game/version_manifest_v2.json" -o "$TEMP_DIR/version_manifest.json"
+    VERSION_URL=$(jq -r --arg VER "1.21.5" '.versions[] | select(.id==$VER) | .url' "$TEMP_DIR/version_manifest.json")
+    curl -sSL "$VERSION_URL" -o "$TEMP_DIR/mc_version.json"
+    JAR_URL=$(jq -r '.downloads.client.url' "$TEMP_DIR/mc_version.json")
+    curl -sSL "$JAR_URL" -o "$TEMP_DIR/1.21.5.jar"
+    mv "$TEMP_DIR/mc_version.json" "$TEMP_DIR/1.21.5.json"
+    rm "$TEMP_DIR/version_manifest.json"
     fi
 
     # create the 4 game instances for 1.21.5
