@@ -124,11 +124,28 @@ echo "[INFO] Copying accounts.json from script directory to PollyMC config..."
 cp "$(dirname "$0")/accounts.json" "$POLLYMC_DIR/accounts.json"
 
 # --------- INSTALL FABRIC LOADER IN EACH PROFILE ---------
-# For each PollyMC instance, create or update the instance.cfg to use Fabric Loader and the downloaded JDK 21
-echo "[INFO] Installing Fabric Loader in each PollyMC instance..."
+echo "[INFO] Installing Fabric Loader in each PollyMC instance (no installer, direct jar method)..."
+FABRIC_LOADER_VERSION="0.15.7"
+FABRIC_MC_VERSION="$MINECRAFT_VERSION"
+FABRIC_VERSION_DIR="fabric-loader-${FABRIC_LOADER_VERSION}-${FABRIC_MC_VERSION}"
+FABRIC_LOADER_JAR_URL="https://maven.fabricmc.net/net/fabricmc/fabric-loader/${FABRIC_LOADER_VERSION}/fabric-loader-${FABRIC_LOADER_VERSION}.jar"
+
 for i in 1 2 3 4; do
     INSTANCE_DIR="$POLLYMC_DIR/instances/$MINECRAFT_VERSION-$i"
-    # Create instance.cfg with Fabric Loader if it doesn't exist
+    MC_VERSIONS_DIR="$INSTANCE_DIR/.minecraft/versions"
+    TARGET_VER_DIR="$MC_VERSIONS_DIR/$FABRIC_VERSION_DIR"
+    mkdir -p "$TARGET_VER_DIR"
+    # Download Fabric Loader jar directly if not present
+    if [ ! -f "$TARGET_VER_DIR/fabric-loader-${FABRIC_LOADER_VERSION}.jar" ]; then
+        echo "[INFO] Downloading Fabric Loader jar for instance $i..."
+        curl -L "$FABRIC_LOADER_JAR_URL" -o "$TARGET_VER_DIR/fabric-loader-${FABRIC_LOADER_VERSION}.jar"
+    fi
+    # Download version manifest (json) if not present
+    if [ ! -f "$TARGET_VER_DIR/$FABRIC_VERSION_DIR.json" ]; then
+        echo "[INFO] Downloading Fabric Loader version manifest for instance $i..."
+        curl -L "https://meta.fabricmc.net/v2/versions/loader/${FABRIC_MC_VERSION}/${FABRIC_LOADER_VERSION}/profile/json" -o "$TARGET_VER_DIR/$FABRIC_VERSION_DIR.json"
+    fi
+    # Update instance.cfg to use the Fabric Loader version
     if [ ! -f "$INSTANCE_DIR/instance.cfg" ]; then
         cat <<EOF > "$INSTANCE_DIR/instance.cfg"
 InstanceType=OneSix
@@ -136,56 +153,70 @@ name=$MINECRAFT_VERSION-$i
 iconKey=minecraft
 iconPath=
 
+[General]
+ConfigVersion=1.2
+OverrideJavaLocation=true
+JavaPath=$JAVA_PATH
+
 [LoaderComponent]
 id=fabric-loader
-version=0.15.7+1.21.5
+version=$FABRIC_VERSION_DIR
 EOF
-    fi
-    # Set javaPath to JDK 21 in the config (add or update as needed)
-    if ! grep -q '^javaPath=' "$INSTANCE_DIR/instance.cfg"; then
-        echo "javaPath=$JAVA_PATH" >> "$INSTANCE_DIR/instance.cfg"
     else
-        sed -i "s|^javaPath=.*|javaPath=$JAVA_PATH|" "$INSTANCE_DIR/instance.cfg"
+        # Ensure JavaPath and LoaderComponent are set
+        sed -i "s|^JavaPath=.*|JavaPath=$JAVA_PATH|" "$INSTANCE_DIR/instance.cfg"
+        if ! grep -q "^id=fabric-loader" "$INSTANCE_DIR/instance.cfg"; then
+            echo -e "\n[LoaderComponent]\nid=fabric-loader\nversion=$FABRIC_VERSION_DIR" >> "$INSTANCE_DIR/instance.cfg"
+        fi
     fi
     # Ensure mods directory exists for each instance
     mkdir -p "$INSTANCE_DIR/.minecraft/mods"
 done
 
-# --------- DOWNLOAD MINECRAFT AND FABRIC LOADER FOR EACH INSTANCE ---------
-echo "[INFO] Downloading Minecraft $MINECRAFT_VERSION and Fabric Loader for PollyMC splitscreen setup..."
-FABRIC_INSTALLER_URL="https://maven.fabricmc.net/net/fabricmc/fabric-installer/1.0.0/fabric-installer-1.0.0.jar"
-FABRIC_INSTALLER_JAR="$TEMP_DIR/fabric-installer.jar"
-curl -L "$FABRIC_INSTALLER_URL" -o "$FABRIC_INSTALLER_JAR"
-
+# --------- DOWNLOAD MINECRAFT FOR EACH INSTANCE ---------
+echo "[INFO] Downloading Minecraft $MINECRAFT_VERSION for PollyMC splitscreen setup..."
 INSTANCE1_DIR="$POLLYMC_DIR/instances/$MINECRAFT_VERSION-1"
 
-for i in 1 2 3 4; do
-    INSTANCE_DIR="$POLLYMC_DIR/instances/$MINECRAFT_VERSION-$i"
-    if [ "$i" -eq 1 ]; then
-        # Download Minecraft and Fabric loader for instance 1 only if not already present
-        if [ ! -f "$INSTANCE1_DIR/.minecraft/versions/$MINECRAFT_VERSION/$MINECRAFT_VERSION.jar" ]; then
-            echo "[INFO] Launching PollyMC to generate launcher profile for instance 1..."
-            "$POLLYMC_DIR/PollyMC-Linux-x86_64.AppImage" --launch "$MINECRAFT_VERSION-1" --no-gui --quit || true
-            echo "[INFO] Downloading Minecraft and Fabric for instance 1..."
-            "$JAVA_PATH" -jar "$FABRIC_INSTALLER_JAR" client -mcversion $MINECRAFT_VERSION -dir "$INSTANCE1_DIR/.minecraft" --noprofile --downloadMinecraft
-            "$POLLYMC_DIR/PollyMC-Linux-x86_64.AppImage" --launch "$MINECRAFT_VERSION-1" --no-gui --quit || true
-        else
-            echo "[INFO] Minecraft already exists for instance 1, skipping download."
-        fi
-    else
-        # For instances 2-4, copy Minecraft from instance 1 if it exists
-        if [ -d "$INSTANCE1_DIR/.minecraft/versions/$MINECRAFT_VERSION" ]; then
-            echo "[INFO] Copying Minecraft core files from instance 1 to instance $i..."
-            rsync -a --exclude 'mods' --exclude 'saves' --exclude 'options.txt' --exclude 'logs' --exclude 'crash-reports' --exclude 'screenshots' --exclude 'resourcepacks' --exclude 'shaderpacks' "$INSTANCE1_DIR/.minecraft/" "$INSTANCE_DIR/.minecraft/"
-            echo "[INFO] Launching PollyMC to generate launcher profile for instance $i..."
-            "$POLLYMC_DIR/PollyMC-Linux-x86_64.AppImage" --launch "$MINECRAFT_VERSION-$i" --no-gui --quit || true
-        else
-            echo "[WARN] Minecraft not found in instance 1. Skipping copy for instance $i."
-        fi
-        # Install Fabric loader for this instance (will not re-download Minecraft)
-        "$JAVA_PATH" -jar "$FABRIC_INSTALLER_JAR" client -mcversion $MINECRAFT_VERSION -dir "$INSTANCE_DIR/.minecraft" --noprofile
-        "$POLLYMC_DIR/PollyMC-Linux-x86_64.AppImage" --launch "$MINECRAFT_VERSION-$i" --no-gui --quit || true
+# Ensure jq is installed
+if ! command -v jq &> /dev/null; then
+    echo "[INFO] Installing jq for JSON parsing..."
+    sudo apt-get update && sudo apt-get install -y jq
+fi
+
+# Download Minecraft jar and version json for instance 1
+MC_VER_DIR="$INSTANCE1_DIR/.minecraft/versions/$MINECRAFT_VERSION"
+if [ ! -f "$MC_VER_DIR/$MINECRAFT_VERSION.jar" ]; then
+    echo "[INFO] Downloading Minecraft $MINECRAFT_VERSION jar and version json..."
+    mkdir -p "$MC_VER_DIR"
+    curl -sSL "https://piston-meta.mojang.com/mc/game/version_manifest_v2.json" -o "$TEMP_DIR/version_manifest.json"
+    VERSION_URL=$(jq -r --arg VER "$MINECRAFT_VERSION" '.versions[] | select(.id==$VER) | .url' "$TEMP_DIR/version_manifest.json")
+    if [ -z "$VERSION_URL" ] || [ "$VERSION_URL" = "null" ]; then
+        echo "[ERROR] Could not find version $MINECRAFT_VERSION in manifest."; exit 1;
     fi
+    curl -sSL "$VERSION_URL" -o "$TEMP_DIR/mc_version.json"
+    JAR_URL=$(jq -r '.downloads.client.url' "$TEMP_DIR/mc_version.json")
+    if [ -z "$JAR_URL" ] || [ "$JAR_URL" = "null" ]; then
+        echo "[ERROR] Could not find client jar URL for $MINECRAFT_VERSION."; exit 1;
+    fi
+    curl -sSL "$JAR_URL" -o "$MC_VER_DIR/$MINECRAFT_VERSION.jar"
+    cp "$TEMP_DIR/mc_version.json" "$MC_VER_DIR/$MINECRAFT_VERSION.json"
+else
+    echo "[INFO] Minecraft already exists for instance 1, skipping download."
+fi
+
+# Copy Minecraft core files to other instances
+for i in 2 3 4; do
+    INSTANCE_DIR="$POLLYMC_DIR/instances/$MINECRAFT_VERSION-$i"
+    if [ -d "$MC_VER_DIR" ]; then
+        echo "[INFO] Copying Minecraft core files from instance 1 to instance $i..."
+        rsync -a --exclude 'mods' --exclude 'saves' --exclude 'options.txt' --exclude 'logs' --exclude 'crash-reports' --exclude 'screenshots' --exclude 'resourcepacks' --exclude 'shaderpacks' "$INSTANCE1_DIR/.minecraft/" "$INSTANCE_DIR/.minecraft/"
+        echo "[INFO] Launching PollyMC to generate launcher profile for instance $i..."
+        "$POLLYMC_DIR/PollyMC-Linux-x86_64.AppImage" --launch "$MINECRAFT_VERSION-$i" || true
+    else
+        echo "[WARN] Minecraft not found in instance 1. Skipping copy for instance $i."
+    fi
+    # Ensure mods directory exists for each instance
+    mkdir -p "$INSTANCE_DIR/.minecraft/mods"
 done
 
 # --------- (OPTIONAL) CREATE DESKTOP SHORTCUT ---------
