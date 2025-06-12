@@ -90,10 +90,8 @@ curl -L "$JUST_ZOOM_MOD_URL" -o "$TEMP_DIR/justzoom.jar"
 curl -L "$FULL_BRIGHTNESS_TOGGLE_MOD_URL" -o "$TEMP_DIR/fullbrightnesstoggle.jar"
 curl -L "$OLD_COMBAT_MOD_URL" -o "$TEMP_DIR/old-combat-mod.jar"
 
-# Copy all downloaded mods from temp dir to the first instance's mods directory
-cp "$TEMP_DIR"/*.jar "$MODS_DIR/"
-# Use helper function to copy each mod to all other instance mods folders
-for modfile in "$MODS_DIR"/*.jar; do
+# Use helper function to copy each mod to all instance mods folders from temp dir
+for modfile in "$TEMP_DIR"/*.jar; do
     copy_mod_to_all_instances "$modfile"
 done
 
