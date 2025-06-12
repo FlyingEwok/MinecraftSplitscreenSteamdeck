@@ -101,14 +101,35 @@ restorePanels() {
 # Function: getControllerCount
 # =============================
 # Detects the number of controllers (1–4) by counting /dev/input/js* devices.
-# Steam Input creates duplicate devices, so we halve the count (rounding up).
+# Steam Input (when Steam is running) creates duplicate devices, so we halve the count (rounding up).
 # Ensures at least 1 and at most 4 controllers are reported.
+# Logic:
+#   - Counts all /dev/input/js* devices (joysticks/gamepads recognized by the system)
+#   - Checks if the main Steam client is running (native or Flatpak)
+#   - Only halves the count if the main Steam client is running (not just helpers)
+#   - Returns a value between 1 and 4 (inclusive)
 getControllerCount() {
     local count
+    local steam_running=0
+    # Count all joystick/gamepad devices
     count=$(ls /dev/input/js* 2>/dev/null | wc -l)
-    count=$(( (count + 1) / 2 ))  # Halve, rounding up, to account for Steam Input duplicates
+    # Only halve if the main Steam client is running (native or Flatpak)
+    #   - pgrep -x steam: native Steam client
+    #   - pgrep -f '^/app/bin/steam$': Flatpak Steam binary
+    #   - pgrep -f 'flatpak run com.valvesoftware.Steam': Flatpak Steam launcher
+    if pgrep -x steam >/dev/null \
+        || pgrep -f '^/app/bin/steam$' >/dev/null \
+        || pgrep -f 'flatpak run com.valvesoftware.Steam' >/dev/null; then
+        steam_running=1
+    fi
+    # If Steam is running, halve the count (rounding up) to account for Steam Input duplicates
+    if [ "$steam_running" -eq 1 ]; then
+        count=$(( (count + 1) / 2 ))
+    fi
+    # Clamp the count between 1 and 4
     [ "$count" -gt 4 ] && count=4
     [ "$count" -lt 1 ] && count=1
+    # Output the detected controller count
     echo "$count"
 }
 
