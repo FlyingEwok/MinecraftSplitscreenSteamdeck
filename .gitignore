@@ -8,4 +8,6 @@
 !add-to-steam.py
 !accounts.json
 !sampleInstance/
-!sampleInstance/** 
+!sampleInstance/**
+!.github/
+!.github/**

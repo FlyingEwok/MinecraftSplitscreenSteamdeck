@@ -1,0 +1,25 @@
+# Release workflow for Minecraft Splitscreen Steamdeck installer
+# This workflow creates a GitHub release and uploads the install-minecraft-splitscreen.sh script as an asset
+# whenever a new tag starting with 'v' is pushed (e.g., v1.0.0).
+
+name: Release Minecraft Splitscreen Installer
+
+on:
+  push:
+    tags:
+      - 'v*'  # Trigger on version tags like v1.0, v2.0.1, etc.
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Upload installer script as release asset
+        uses: softprops/action-gh-release@v2
+        with:
+          files: install-minecraft-splitscreen.sh
+          generate_release_notes: true
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
