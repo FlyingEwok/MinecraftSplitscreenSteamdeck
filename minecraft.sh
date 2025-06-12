@@ -40,11 +40,12 @@ selfUpdate() {
     # Compare with current script
     if ! cmp -s "$tmpfile" "$0"; then
         echo "[Self-Update] New version found. Updating..."
-        # Preserve permissions and atomically replace
+        # Overwrite the current script in place (preserve permissions)
+        cp "$tmpfile" "$0"
         chmod --reference="$0" "$tmpfile"
-        mv "$tmpfile" "$0"
-        echo "[Self-Update] Update complete. Please re-run the script."
-        exit 0
+        rm -f "$tmpfile"
+        echo "[Self-Update] Update complete. Restarting..."
+        exec "$0" "$@"
     else
         rm -f "$tmpfile"
         # echo "[Self-Update] Already up to date."
