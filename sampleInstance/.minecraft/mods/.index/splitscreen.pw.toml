@@ -1,0 +1,13 @@
+filename = 'splitscreen-0.9.0+1.21.5.jar'
+name = 'Splitscreen Support'
+side = 'client'
+
+[download]
+hash = '46c3bcf04c45620faa15659394170a7b31973c2ee4c954058852c1e308ca9941903592d7350ab95d22eb454ed56be405a2734cdb245a61afae98061818a93055'
+hash-format = 'sha512'
+mode = 'url'
+url = 'https://cdn.modrinth.com/data/yJgqfSDR/versions/9U4TVf3r/splitscreen-0.9.0%2B1.21.5.jar'
+
+[update.modrinth]
+mod-id = 'yJgqfSDR'
+version = '9U4TVf3r'

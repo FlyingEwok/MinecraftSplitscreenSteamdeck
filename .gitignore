@@ -9,3 +9,4 @@
 !minecraft.sh
 !accounts.json
 !sampleInstance/
+!sampleInstance/** 

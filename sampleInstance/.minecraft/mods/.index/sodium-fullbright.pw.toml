@@ -1,0 +1,13 @@
+filename = 'sodium-fullbright-1.0.1.jar'
+name = 'Sodium Fullbright'
+side = 'client'
+
+[download]
+hash = '5cec82e166b63821df4583ec087d8275e9d26c5485301506b78814ac7ca1bafb694ee89ff32631f3e71540e755fe448d4c50a54334793b7b7809366954887ebe'
+hash-format = 'sha512'
+mode = 'url'
+url = 'https://cdn.modrinth.com/data/iVSjpXol/versions/mMVj8SDc/sodium-fullbright-1.0.1.jar'
+
+[update.modrinth]
+mod-id = 'iVSjpXol'
+version = 'mMVj8SDc'

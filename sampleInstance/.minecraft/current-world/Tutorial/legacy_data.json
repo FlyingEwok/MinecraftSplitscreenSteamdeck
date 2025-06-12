@@ -1,0 +1,22 @@
+{
+  "customTips": {},
+  "initialItems": [
+    {
+      "gamerule": "playerStartingMap",
+      "item": {
+        "components": {},
+        "count": 1,
+        "item": "minecraft:map"
+      }
+    },
+    {
+      "gamerule": "playerStartingBundle",
+      "item": {
+        "components": {},
+        "count": 1,
+        "item": "minecraft:bundle"
+      }
+    }
+  ],
+  "usedEndPortalPositions": []
+}

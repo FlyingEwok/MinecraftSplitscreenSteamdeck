@@ -1,0 +1,16 @@
+{
+  "__comment": "Information to restore the selected controllers for next load of the game",
+  "selected": [
+    {
+      "name": "8BitDo Ultimate 2 Wireless Controller for PC",
+      "guid": "00000001-0000-11ff-0000-28def6790003",
+      "type": 0,
+      "vendor": 11720,
+      "product": 24594,
+      "product_version": 1,
+      "firmware": 0,
+      "buttons": 11,
+      "axes": 6
+    }
+  ]
+}

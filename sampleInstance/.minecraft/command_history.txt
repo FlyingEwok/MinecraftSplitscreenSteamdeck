@@ -1,0 +1,7 @@
+/tp
+/tp P2 P1
+/tp P1 P2
+/tp P2 P1
+/tp @a 96.75 64 -479.1152
+/gamerule oldCombat false
+/gamerule oldCombat true

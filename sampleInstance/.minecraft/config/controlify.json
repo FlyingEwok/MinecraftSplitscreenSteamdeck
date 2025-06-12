@@ -1,0 +1,503 @@
+{
+  "current_controller": "74e981ec317aeb9c74e8d61932b636d3",
+  "controllers": {
+    "883ca6f8b1ae53a0eeeb2dd35c4b9777": {
+      "config": {
+        "controlify:input": {
+          "h_look_sensitivity": 1.0,
+          "v_look_sensitivity": 0.9,
+          "v_look_invert": false,
+          "virtual_mouse_sensitivity": 1.0,
+          "reduce_aiming_sensitivity": true,
+          "button_activation_threshold": 0.5,
+          "is_l_c_e": false,
+          "deadzones": {
+            "controlify:left_stick": 0.0,
+            "controlify:right_stick": 0.0
+          },
+          "deadzones_calibrated": true,
+          "delayed_calibration": false,
+          "mixed_input": false,
+          "keep_default_bindings": false,
+          "radial_actions": [
+            "controlify:toggle_hud_visibility",
+            "controlify:change_perspective",
+            "controlify:drop_stack",
+            "controlify:open_chat",
+            "controlify:swap_hands",
+            "controlify:pick_block",
+            "controlify:take_screenshot",
+            "controlify:show_player_list"
+          ],
+          "radial_button_focus_timeout_ticks": 20,
+          "mapping": {
+            "mappings": [
+              {
+                "from": "controlify:axis/left_stick_left",
+                "to": "controlify:button/south",
+                "threshold": 0.5,
+                "input_type": "AXIS",
+                "output_type": "BUTTON"
+              },
+              {
+                "from": "controlify:button/south",
+                "to": "controlify:button/south",
+                "invert": false,
+                "input_type": "BUTTON",
+                "output_type": "BUTTON"
+              },
+              {
+                "from": "controlify:button/west",
+                "to": "controlify:button/west",
+                "invert": false,
+                "input_type": "BUTTON",
+                "output_type": "BUTTON"
+              },
+              {
+                "from": "controlify:button/east",
+                "to": "controlify:button/east",
+                "invert": false,
+                "input_type": "BUTTON",
+                "output_type": "BUTTON"
+              },
+              {
+                "from": "controlify:button/north",
+                "to": "controlify:button/north",
+                "invert": false,
+                "input_type": "BUTTON",
+                "output_type": "BUTTON"
+              },
+              {
+                "from": "controlify:button/left_shoulder",
+                "to": "controlify:button/left_shoulder",
+                "invert": false,
+                "input_type": "BUTTON",
+                "output_type": "BUTTON"
+              },
+              {
+                "from": "controlify:button/right_shoulder",
+                "to": "controlify:button/right_shoulder",
+                "invert": false,
+                "input_type": "BUTTON",
+                "output_type": "BUTTON"
+              },
+              {
+                "from": "controlify:button/back",
+                "to": "controlify:button/start",
+                "invert": false,
+                "input_type": "BUTTON",
+                "output_type": "BUTTON"
+              },
+              {
+                "from": "controlify:button/start",
+                "to": "controlify:button/guide",
+                "invert": false,
+                "input_type": "BUTTON",
+                "output_type": "BUTTON"
+              },
+              {
+                "from": "controlify:button/left_stick",
+                "to": "controlify:button/left_stick",
+                "invert": false,
+                "input_type": "BUTTON",
+                "output_type": "BUTTON"
+              },
+              {
+                "from": "controlify:button/right_stick",
+                "to": "controlify:button/right_stick",
+                "invert": false,
+                "input_type": "BUTTON",
+                "output_type": "BUTTON"
+              },
+              {
+                "from": "controlify:button/dpad_up",
+                "to": "controlify:button/dpad_up",
+                "invert": false,
+                "input_type": "BUTTON",
+                "output_type": "BUTTON"
+              },
+              {
+                "from": "controlify:button/dpad_left",
+                "to": "controlify:button/dpad_left",
+                "invert": false,
+                "input_type": "BUTTON",
+                "output_type": "BUTTON"
+              },
+              {
+                "from": "controlify:button/dpad_down",
+                "to": "controlify:button/dpad_down",
+                "invert": false,
+                "input_type": "BUTTON",
+                "output_type": "BUTTON"
+              },
+              {
+                "from": "controlify:button/dpad_right",
+                "to": "controlify:button/dpad_right",
+                "invert": false,
+                "input_type": "BUTTON",
+                "output_type": "BUTTON"
+              },
+              {
+                "from": "controlify:axis/left_stick_left",
+                "to": "controlify:axis/left_stick_left",
+                "min_in": 0.0,
+                "min_out": 0.0,
+                "max_in": 1.0,
+                "max_out": 1.0,
+                "input_type": "AXIS",
+                "output_type": "AXIS"
+              },
+              {
+                "from": "controlify:axis/left_stick_down",
+                "to": "controlify:axis/left_stick_down",
+                "min_in": 0.0,
+                "min_out": 0.0,
+                "max_in": 1.0,
+                "max_out": 1.0,
+                "input_type": "AXIS",
+                "output_type": "AXIS"
+              },
+              {
+                "from": "controlify:axis/left_stick_right",
+                "to": "controlify:axis/left_stick_right",
+                "min_in": 0.0,
+                "min_out": 0.0,
+                "max_in": 1.0,
+                "max_out": 1.0,
+                "input_type": "AXIS",
+                "output_type": "AXIS"
+              },
+              {
+                "from": "controlify:axis/left_stick_up",
+                "to": "controlify:axis/left_stick_up",
+                "min_in": 0.0,
+                "min_out": 0.0,
+                "max_in": 1.0,
+                "max_out": 1.0,
+                "input_type": "AXIS",
+                "output_type": "AXIS"
+              },
+              {
+                "from": "controlify:axis/right_stick_left",
+                "to": "controlify:axis/right_stick_left",
+                "min_in": 0.0,
+                "min_out": 0.0,
+                "max_in": 1.0,
+                "max_out": 1.0,
+                "input_type": "AXIS",
+                "output_type": "AXIS"
+              },
+              {
+                "from": "controlify:axis/right_stick_down",
+                "to": "controlify:axis/right_stick_down",
+                "min_in": 0.0,
+                "min_out": 0.0,
+                "max_in": 1.0,
+                "max_out": 1.0,
+                "input_type": "AXIS",
+                "output_type": "AXIS"
+              },
+              {
+                "from": "controlify:axis/right_stick_right",
+                "to": "controlify:axis/right_stick_right",
+                "min_in": 0.0,
+                "min_out": 0.0,
+                "max_in": 1.0,
+                "max_out": 1.0,
+                "input_type": "AXIS",
+                "output_type": "AXIS"
+              },
+              {
+                "from": "controlify:axis/right_stick_up",
+                "to": "controlify:axis/right_stick_up",
+                "min_in": 0.0,
+                "min_out": 0.0,
+                "max_in": 1.0,
+                "max_out": 1.0,
+                "input_type": "AXIS",
+                "output_type": "AXIS"
+              },
+              {
+                "from": "controlify:axis/left_trigger",
+                "to": "controlify:axis/left_trigger",
+                "min_in": 0.0,
+                "min_out": 0.0,
+                "max_in": 1.0,
+                "max_out": 1.0,
+                "input_type": "AXIS",
+                "output_type": "AXIS"
+              },
+              {
+                "from": "controlify:axis/right_trigger",
+                "to": "controlify:axis/right_trigger",
+                "min_in": 0.0,
+                "min_out": 0.0,
+                "max_in": 1.0,
+                "max_out": 1.0,
+                "input_type": "AXIS",
+                "output_type": "AXIS"
+              }
+            ],
+            "deadzones": {
+              "controlify:left_stick": {
+                "name": "controlify:left_stick",
+                "axes": [
+                  "controlify:axis/left_stick_up",
+                  "controlify:axis/left_stick_down",
+                  "controlify:axis/left_stick_left",
+                  "controlify:axis/left_stick_right"
+                ]
+              },
+              "controlify:right_stick": {
+                "name": "controlify:right_stick",
+                "axes": [
+                  "controlify:axis/right_stick_up",
+                  "controlify:axis/right_stick_down",
+                  "controlify:axis/right_stick_left",
+                  "controlify:axis/right_stick_right"
+                ]
+              }
+            }
+          },
+          "bindings": {
+            "controlify:pause": {
+              "button": "controlify:button/guide"
+            },
+            "controlify:change_perspective": {
+              "button": "controlify:button/start"
+            },
+            "controlify:open_chat": {},
+            "controlify:radial_menu": {},
+            "controlify:vmouse_toggle": {
+              "button": "controlify:button/start"
+            },
+            "fabric-key-binding-api-v1:justzoom.keybinds.keybind.zoom": {
+              "button": "controlify:button/dpad_right"
+            },
+            "fabric-key-binding-api-v1:fullbrightnesstoggle.key.togglebrightness": {
+              "button": "controlify:button/dpad_up"
+            }
+          }
+        },
+        "controlify:config/generic": {
+          "nickname": null,
+          "auto_jump": false,
+          "toggle_sprint": true,
+          "toggle_sneak": true,
+          "disable_fly_drifting": false,
+          "show_ingame_guide": true,
+          "ingame_guide_bottom": false,
+          "show_screen_guides": true,
+          "show_on_screen_keyboard": true,
+          "dont_show_controller_submission": true
+        },
+        "controlify:rumble": {
+          "enabled": true,
+          "vibration_strengths": {
+            "controlify:gui": 1.0,
+            "controlify:interaction": 1.0,
+            "controlify:player": 1.0,
+            "controlify:master": 1.0,
+            "controlify:world": 1.0
+          }
+        }
+      }
+    },
+    "74e981ec317aeb9c74e8d61932b636d3": {
+      "config": {
+        "controlify:input": {
+          "h_look_sensitivity": 1.0,
+          "v_look_sensitivity": 0.9,
+          "v_look_invert": false,
+          "virtual_mouse_sensitivity": 1.0,
+          "reduce_aiming_sensitivity": true,
+          "button_activation_threshold": 0.5,
+          "is_l_c_e": false,
+          "deadzones": {
+            "controlify:right_stick": 0.080030516,
+            "controlify:left_stick": 0.080030516
+          },
+          "deadzones_calibrated": true,
+          "delayed_calibration": false,
+          "mixed_input": false,
+          "keep_default_bindings": false,
+          "radial_actions": [
+            "controlify:toggle_hud_visibility",
+            "controlify:change_perspective",
+            "controlify:drop_stack",
+            "controlify:open_chat",
+            "controlify:swap_hands",
+            "controlify:pick_block",
+            "controlify:take_screenshot",
+            "controlify:show_player_list"
+          ],
+          "radial_button_focus_timeout_ticks": 20,
+          "mapping": null,
+          "bindings": {}
+        },
+        "controlify:config/generic": {
+          "nickname": null,
+          "auto_jump": false,
+          "toggle_sprint": true,
+          "toggle_sneak": true,
+          "disable_fly_drifting": false,
+          "show_ingame_guide": true,
+          "ingame_guide_bottom": false,
+          "show_screen_guides": true,
+          "show_on_screen_keyboard": true,
+          "dont_show_controller_submission": true
+        }
+      }
+    },
+    "36d71e2ac7d09813c93266d63673bf7d": {
+      "config": {
+        "controlify:input": {
+          "h_look_sensitivity": 1.0,
+          "v_look_sensitivity": 0.9,
+          "v_look_invert": false,
+          "virtual_mouse_sensitivity": 1.0,
+          "reduce_aiming_sensitivity": true,
+          "button_activation_threshold": 0.5,
+          "is_l_c_e": false,
+          "deadzones": {
+            "controlify:right_stick": 0.12315185,
+            "controlify:left_stick": 0.13883789
+          },
+          "deadzones_calibrated": true,
+          "delayed_calibration": false,
+          "mixed_input": false,
+          "keep_default_bindings": false,
+          "radial_actions": [
+            "controlify:toggle_hud_visibility",
+            "controlify:change_perspective",
+            "controlify:drop_stack",
+            "controlify:open_chat",
+            "controlify:swap_hands",
+            "controlify:pick_block",
+            "controlify:take_screenshot",
+            "controlify:show_player_list"
+          ],
+          "radial_button_focus_timeout_ticks": 20,
+          "mapping": null,
+          "bindings": {}
+        },
+        "controlify:config/generic": {
+          "nickname": null,
+          "auto_jump": false,
+          "toggle_sprint": true,
+          "toggle_sneak": true,
+          "disable_fly_drifting": false,
+          "show_ingame_guide": true,
+          "ingame_guide_bottom": false,
+          "show_screen_guides": true,
+          "show_on_screen_keyboard": true,
+          "dont_show_controller_submission": false
+        },
+        "controlify:bluetooth": {
+          "dont_show_warning_again": false
+        },
+        "controlify:rumble": {
+          "enabled": true,
+          "vibration_strengths": {
+            "controlify:gui": 1.0,
+            "controlify:interaction": 1.0,
+            "controlify:player": 1.0,
+            "controlify:master": 1.0,
+            "controlify:world": 1.0
+          }
+        },
+        "controlify:gyro": {
+          "calibrated": true,
+          "delayed_calibration": false,
+          "look_sensitivity": 0.0,
+          "relative_gyro_mode": false,
+          "requires_button": "ON",
+          "yaw_mode": "YAW",
+          "flick_stick": false,
+          "invert_x": false,
+          "invert_y": false,
+          "calibration": {
+            "x": 0.0057133036,
+            "y": -0.0048819287,
+            "z": 0.0027335798
+          }
+        }
+      }
+    },
+    "6e5c77a4bba90be44b1bdeda8480c00f": {
+      "config": {
+        "controlify:input": {
+          "h_look_sensitivity": 1.0,
+          "v_look_sensitivity": 0.9,
+          "v_look_invert": false,
+          "virtual_mouse_sensitivity": 1.0,
+          "reduce_aiming_sensitivity": true,
+          "button_activation_threshold": 0.5,
+          "is_l_c_e": false,
+          "deadzones": {
+            "controlify:right_stick": 0.080030516,
+            "controlify:left_stick": 0.080030516
+          },
+          "deadzones_calibrated": true,
+          "delayed_calibration": false,
+          "mixed_input": false,
+          "keep_default_bindings": false,
+          "radial_actions": [
+            "controlify:toggle_hud_visibility",
+            "controlify:change_perspective",
+            "controlify:drop_stack",
+            "controlify:open_chat",
+            "controlify:swap_hands",
+            "controlify:pick_block",
+            "controlify:take_screenshot",
+            "controlify:show_player_list"
+          ],
+          "radial_button_focus_timeout_ticks": 20,
+          "mapping": null,
+          "bindings": {}
+        },
+        "controlify:config/generic": {
+          "nickname": null,
+          "auto_jump": false,
+          "toggle_sprint": true,
+          "toggle_sneak": true,
+          "disable_fly_drifting": false,
+          "show_ingame_guide": true,
+          "ingame_guide_bottom": false,
+          "show_screen_guides": true,
+          "show_on_screen_keyboard": true,
+          "dont_show_controller_submission": false
+        },
+        "controlify:rumble": {
+          "enabled": true,
+          "vibration_strengths": {
+            "controlify:gui": 1.0,
+            "controlify:interaction": 1.0,
+            "controlify:player": 1.0,
+            "controlify:master": 1.0,
+            "controlify:world": 1.0
+          }
+        }
+      }
+    }
+  },
+  "global": {
+    "virtual_mouse_screens": [
+      "net.minecraft.class_465"
+    ],
+    "keyboardMovement": false,
+    "keyboard_movement_whitelist": [],
+    "out_of_focus_input": false,
+    "load_vibration_natives": true,
+    "custom_vibration_natives_path": "",
+    "vibration_onboarded": true,
+    "reach_around": "OFF",
+    "allow_server_rumble": true,
+    "ui_sounds": false,
+    "notify_low_battery": true,
+    "quiet_mode": false,
+    "ingame_button_guide_scale": 1.0,
+    "use_enhanced_steam_deck_driver": true,
+    "seen_servers": []
+  }
+}

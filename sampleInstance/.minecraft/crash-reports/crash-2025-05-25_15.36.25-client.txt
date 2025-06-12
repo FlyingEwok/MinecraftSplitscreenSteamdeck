@@ -1,0 +1,237 @@
+---- Minecraft Crash Report ----
+// But it works on my machine.
+
+Time: 2025-05-25 15:36:25
+Description: Rendering screen
+
+com.google.common.util.concurrent.UncheckedExecutionException: java.lang.IllegalArgumentException: Illegal character in path at index 57: https://github.com/Serilum/.issue-tracker/labels/Library: Collective
+	at knot//com.google.common.cache.LocalCache$Segment.get(LocalCache.java:2085)
+	at knot//com.google.common.cache.LocalCache.get(LocalCache.java:4017)
+	at knot//com.google.common.cache.LocalCache.getOrLoad(LocalCache.java:4040)
+	at knot//com.google.common.cache.LocalCache$LocalLoadingCache.get(LocalCache.java:4989)
+	at knot//com.google.common.cache.LocalCache$LocalLoadingCache.getUnchecked(LocalCache.java:4996)
+	at knot//wily.legacy.client.screen.ModsScreen.renderDefaultBackground(ModsScreen.java:153)
+	at knot//wily.legacy.client.screen.LegacyScreen.method_25420(LegacyScreen.java:35)
+	at knot//net.minecraft.class_437.method_25394(class_437.java:122)
+	at knot//net.minecraft.class_437.method_47413(class_437.java:113)
+	at knot//net.minecraft.class_757.mixinextras$bridge$method_47413$70(class_757.java)
+	at knot//net.minecraft.class_757.wrapOperation$bba000$fabric-screen-api-v1$onRenderScreen(class_757.java:1415)
+	at knot//net.minecraft.class_757.method_3192(class_757.java:572)
+	at knot//net.minecraft.class_310.method_1523(class_310.java:1353)
+	at knot//net.minecraft.class_310.method_1514(class_310.java:936)
+	at knot//net.minecraft.client.main.Main.main(Main.java:265)
+	at net.fabricmc.loader.impl.game.minecraft.MinecraftGameProvider.launch(MinecraftGameProvider.java:480)
+	at net.fabricmc.loader.impl.launch.knot.Knot.launch(Knot.java:74)
+	at net.fabricmc.loader.impl.launch.knot.KnotClient.main(KnotClient.java:23)
+	at org.prismlauncher.launcher.impl.StandardLauncher.launch(StandardLauncher.java:87)
+	at org.prismlauncher.EntryPoint.listen(EntryPoint.java:130)
+	at org.prismlauncher.EntryPoint.main(EntryPoint.java:70)
+Caused by: java.lang.IllegalArgumentException: Illegal character in path at index 57: https://github.com/Serilum/.issue-tracker/labels/Library: Collective
+	at java.base/java.net.URI.create(URI.java:932)
+	at knot//wily.legacy.client.screen.ModsScreen.urlClickEvent(ModsScreen.java:102)
+	at knot//wily.legacy.client.screen.ModsScreen$1.lambda$load$1(ModsScreen.java:92)
+	at java.base/java.util.Optional.ifPresent(Optional.java:178)
+	at knot//wily.legacy.client.screen.ModsScreen$1.load(ModsScreen.java:92)
+	at knot//wily.legacy.client.screen.ModsScreen$1.load(ModsScreen.java:78)
+	at knot//com.google.common.cache.LocalCache$LoadingValueReference.loadFuture(LocalCache.java:3574)
+	at knot//com.google.common.cache.LocalCache$Segment.loadSync(LocalCache.java:2316)
+	at knot//com.google.common.cache.LocalCache$Segment.lockedGetOrLoad(LocalCache.java:2189)
+	at knot//com.google.common.cache.LocalCache$Segment.get(LocalCache.java:2079)
+	... 20 more
+Caused by: java.net.URISyntaxException: Illegal character in path at index 57: https://github.com/Serilum/.issue-tracker/labels/Library: Collective
+	at java.base/java.net.URI$Parser.fail(URI.java:2995)
+	at java.base/java.net.URI$Parser.checkChars(URI.java:3166)
+	at java.base/java.net.URI$Parser.parseHierarchical(URI.java:3248)
+	at java.base/java.net.URI$Parser.parse(URI.java:3196)
+	at java.base/java.net.URI.<init>(URI.java:645)
+	at java.base/java.net.URI.create(URI.java:930)
+	... 29 more
+
+
+A detailed walkthrough of the error, its code path and all known details is as follows:
+---------------------------------------------------------------------------------------
+
+-- Head --
+Thread: Render thread
+Stacktrace:
+	at knot//com.google.common.cache.LocalCache$Segment.get(LocalCache.java:2085)
+	at knot//com.google.common.cache.LocalCache.get(LocalCache.java:4017)
+	at knot//com.google.common.cache.LocalCache.getOrLoad(LocalCache.java:4040)
+	at knot//com.google.common.cache.LocalCache$LocalLoadingCache.get(LocalCache.java:4989)
+	at knot//com.google.common.cache.LocalCache$LocalLoadingCache.getUnchecked(LocalCache.java:4996)
+	at knot//wily.legacy.client.screen.ModsScreen.renderDefaultBackground(ModsScreen.java:153)
+	at knot//wily.legacy.client.screen.LegacyScreen.method_25420(LegacyScreen.java:35)
+	at knot//net.minecraft.class_437.method_25394(class_437.java:122)
+	at knot//net.minecraft.class_437.method_47413(class_437.java:113)
+	at knot//net.minecraft.class_757.mixinextras$bridge$method_47413$70(class_757.java)
+	at knot//net.minecraft.class_757.wrapOperation$bba000$fabric-screen-api-v1$onRenderScreen(class_757.java:1415)
+
+-- Screen render details --
+Details:
+	Screen name: wily.legacy.client.screen.ModsScreen
+	Mouse location: Scaled: (1116.871875, 195.180723). Absolute: (3348.000000, 585.000000)
+	Screen size: Scaled: (1281, 360). Absolute: (3840, 1079). Scale factor of 2.998870
+Stacktrace:
+	at knot//net.minecraft.class_757.method_3192(class_757.java:572)
+	at knot//net.minecraft.class_310.method_1523(class_310.java:1353)
+	at knot//net.minecraft.class_310.method_1514(class_310.java:936)
+	at knot//net.minecraft.client.main.Main.main(Main.java:265)
+	at net.fabricmc.loader.impl.game.minecraft.MinecraftGameProvider.launch(MinecraftGameProvider.java:480)
+	at net.fabricmc.loader.impl.launch.knot.Knot.launch(Knot.java:74)
+	at net.fabricmc.loader.impl.launch.knot.KnotClient.main(KnotClient.java:23)
+	at org.prismlauncher.launcher.impl.StandardLauncher.launch(StandardLauncher.java:87)
+	at org.prismlauncher.EntryPoint.listen(EntryPoint.java:130)
+	at org.prismlauncher.EntryPoint.main(EntryPoint.java:70)
+
+-- Uptime --
+Details:
+	JVM uptime: 37.424s
+	Wall uptime: 25.516s
+	High-res time: 23.699s
+	Client ticks: 399 ticks / 19.950s
+Stacktrace:
+	at knot//net.minecraft.class_310.method_1587(class_310.java:2382)
+	at knot//net.minecraft.class_310.method_54580(class_310.java:1005)
+	at knot//net.minecraft.class_310.method_1514(class_310.java:957)
+	at knot//net.minecraft.client.main.Main.main(Main.java:265)
+	at net.fabricmc.loader.impl.game.minecraft.MinecraftGameProvider.launch(MinecraftGameProvider.java:480)
+	at net.fabricmc.loader.impl.launch.knot.Knot.launch(Knot.java:74)
+	at net.fabricmc.loader.impl.launch.knot.KnotClient.main(KnotClient.java:23)
+	at org.prismlauncher.launcher.impl.StandardLauncher.launch(StandardLauncher.java:87)
+	at org.prismlauncher.EntryPoint.listen(EntryPoint.java:130)
+	at org.prismlauncher.EntryPoint.main(EntryPoint.java:70)
+
+-- Last reload --
+Details:
+	Reload number: 1
+	Reload reason: initial
+	Finished: Yes
+	Packs: vanilla, fabric, cubes-without-borders, fabric-api, fabric-api-base, fabric-api-lookup-api-v1, fabric-biome-api-v1, fabric-block-api-v1, fabric-block-view-api-v2, fabric-blockrenderlayer-v1, fabric-client-tags-api-v1, fabric-command-api-v1, fabric-command-api-v2, fabric-commands-v0, fabric-content-registries-v0, fabric-convention-tags-v1, fabric-convention-tags-v2, fabric-crash-report-info-v1, fabric-data-attachment-api-v1, fabric-data-generation-api-v1, fabric-dimensions-v1, fabric-entity-events-v1, fabric-events-interaction-v0, fabric-game-rule-api-v1, fabric-item-api-v1, fabric-item-group-api-v1, fabric-key-binding-api-v1, fabric-keybindings-v0, fabric-lifecycle-events-v1, fabric-loot-api-v2, fabric-loot-api-v3, fabric-message-api-v1, fabric-model-loading-api-v1, fabric-networking-api-v1, fabric-object-builder-api-v1, fabric-particles-v1, fabric-recipe-api-v1, fabric-registry-sync-v0, fabric-renderer-api-v1, fabric-renderer-indigo, fabric-rendering-data-attachment-v1, fabric-rendering-fluids-v1, fabric-rendering-v1, fabric-resource-conditions-api-v1, fabric-resource-loader-v0, fabric-screen-api-v1, fabric-screen-handler-api-v1, fabric-sound-api-v1, fabric-tag-api-v1, fabric-transfer-api-v1, fabric-transitive-access-wideners-v1, fabricloader, factory_api, forgeconfigapiport, fullbrightnesstoggle, justzoom, legacy, reeses-sodium-options, sodium, sodium-extra, sodium-fullbright, sodiumdynamiclights, sodiumextras, sodiumoptionsapi, team_reborn_energy, txnilib, programmer_art, fabric-item-group-api-v1_programmer_art, legacy_programmer_art, sodium_programmer_art, legacy:legacy_waters, legacy:legacy_resources
+
+-- System Details --
+Details:
+	Minecraft Version: 1.21.5
+	Minecraft Version ID: 1.21.5
+	Operating System: Linux (amd64) version 6.11.11-valve12-1-neptune-611-g517a46b477e1
+	Java Version: 21.0.6, Flathub
+	Java VM Version: OpenJDK 64-Bit Server VM (mixed mode, sharing), Flathub
+	Memory: 170867072 bytes (162 MiB) / 763363328 bytes (728 MiB) up to 4294967296 bytes (4096 MiB)
+	CPUs: 8
+	Processor Vendor: AuthenticAMD
+	Processor Name: AMD Custom APU 0932
+	Identifier: AuthenticAMD Family 23 Model 145 Stepping 0
+	Microarchitecture: unknown
+	Frequency (GHz): -0.00
+	Number of physical packages: 1
+	Number of physical CPUs: 4
+	Number of logical CPUs: 8
+	Graphics card #0 name: Sephiroth [AMD Custom GPU 0405]
+	Graphics card #0 vendor: Advanced Micro Devices, Inc. [AMD/ATI] (0x1002)
+	Graphics card #0 VRAM (MiB): 258.00
+	Graphics card #0 deviceId: 0x1435
+	Graphics card #0 versionInfo: unknown
+	Virtual memory max (MiB): 15833.26
+	Virtual memory used (MiB): 7503.54
+	Swap memory total (MiB): 8428.49
+	Swap memory used (MiB): 2.00
+	Space in storage for jna.tmpdir (MiB): <path not set>
+	Space in storage for org.lwjgl.system.SharedLibraryExtractPath (MiB): <path not set>
+	Space in storage for io.netty.native.workdir (MiB): <path not set>
+	Space in storage for java.io.tmpdir (MiB): available: 7334.05, total: 7404.77
+	Space in storage for workdir (MiB): available: 247180.64, total: 474512.56
+	JVM Flags: 2 total; -Xms512m -Xmx4096m
+	Fabric Mods: 
+		collective: Collective 8.3
+		cubes-without-borders: Cubes Without Borders 3.0.0+mc1.21.5
+		fabric-api: Fabric API 0.124.2+1.21.5
+			fabric-api-base: Fabric API Base 0.4.62+73a52b4b49
+			fabric-api-lookup-api-v1: Fabric API Lookup API (v1) 1.6.96+86c3a9f149
+			fabric-biome-api-v1: Fabric Biome API (v1) 16.0.7+2dd063df49
+			fabric-block-api-v1: Fabric Block API (v1) 1.0.37+86c3a9f149
+			fabric-block-view-api-v2: Fabric BlockView API (v2) 1.0.26+aa6d566c49
+			fabric-blockrenderlayer-v1: Fabric BlockRenderLayer Registration (v1) 2.0.16+86c3a9f149
+			fabric-client-tags-api-v1: Fabric Client Tags 1.1.37+86c3a9f149
+			fabric-command-api-v1: Fabric Command API (v1) 1.2.70+f71b366f49
+			fabric-command-api-v2: Fabric Command API (v2) 2.2.49+73a52b4b49
+			fabric-commands-v0: Fabric Commands (v0) 0.2.87+df3654b349
+			fabric-content-registries-v0: Fabric Content Registries (v0) 10.0.14+3e6c1f7d49
+			fabric-convention-tags-v1: Fabric Convention Tags 2.1.30+7f945d5b49
+			fabric-convention-tags-v2: Fabric Convention Tags (v2) 2.14.4+fca633a049
+			fabric-crash-report-info-v1: Fabric Crash Report Info (v1) 0.3.12+86c3a9f149
+			fabric-data-attachment-api-v1: Fabric Data Attachment API (v1) 1.8.2+1aba48bb49
+			fabric-data-generation-api-v1: Fabric Data Generation API (v1) 22.4.0+ea72995749
+			fabric-dimensions-v1: Fabric Dimensions API (v1) 4.0.17+3e6c1f7d49
+			fabric-entity-events-v1: Fabric Entity Events (v1) 2.0.25+27c1078f49
+			fabric-events-interaction-v0: Fabric Events Interaction (v0) 4.0.13+73a52b4b49
+			fabric-game-rule-api-v1: Fabric Game Rule API (v1) 1.0.70+c327076a49
+			fabric-item-api-v1: Fabric Item API (v1) 11.4.1+e46fd76a49
+			fabric-item-group-api-v1: Fabric Item Group API (v1) 4.2.9+3459fc6149
+			fabric-key-binding-api-v1: Fabric Key Binding API (v1) 1.0.63+ecf51cdc49
+			fabric-keybindings-v0: Fabric Key Bindings (v0) 0.2.61+df3654b349
+			fabric-lifecycle-events-v1: Fabric Lifecycle Events (v1) 2.6.0+230071a049
+			fabric-loot-api-v2: Fabric Loot API (v2) 3.0.48+3f89f5a549
+			fabric-loot-api-v3: Fabric Loot API (v3) 1.0.36+86c3a9f149
+			fabric-message-api-v1: Fabric Message API (v1) 6.0.33+86c3a9f149
+			fabric-model-loading-api-v1: Fabric Model Loading API (v1) 5.2.0+c982b95149
+			fabric-networking-api-v1: Fabric Networking API (v1) 4.4.0+f3ffa98949
+			fabric-object-builder-api-v1: Fabric Object Builder API (v1) 21.1.0+b8d6ba7049
+			fabric-particles-v1: Fabric Particles (v1) 4.1.1+112e550e49
+			fabric-recipe-api-v1: Fabric Recipe API (v1) 8.1.7+3235ab3249
+			fabric-registry-sync-v0: Fabric Registry Sync (v0) 6.1.20+b556383249
+			fabric-renderer-api-v1: Fabric Renderer API (v1) 6.0.2+c982b95149
+			fabric-renderer-indigo: Fabric Renderer - Indigo 3.0.3+3e6c1f7d49
+			fabric-rendering-data-attachment-v1: Fabric Rendering Data Attachment (v1) 0.3.64+73761d2e49
+			fabric-rendering-fluids-v1: Fabric Rendering Fluids (v1) 3.1.27+86c3a9f149
+			fabric-rendering-v1: Fabric Rendering (v1) 11.1.11+5490746649
+			fabric-resource-conditions-api-v1: Fabric Resource Conditions API (v1) 5.0.21+73a52b4b49
+			fabric-resource-loader-v0: Fabric Resource Loader (v0) 3.1.7+847e5f5c49
+			fabric-screen-api-v1: Fabric Screen API (v1) 2.0.46+86c3a9f149
+			fabric-screen-handler-api-v1: Fabric Screen Handler API (v1) 1.3.127+c327076a49
+			fabric-sound-api-v1: Fabric Sound API (v1) 1.0.38+86c3a9f149
+			fabric-tag-api-v1: Fabric Tag API (v1) 1.0.17+ecf51cdc49
+			fabric-transfer-api-v1: Fabric Transfer API (v1) 5.4.24+7b20cbb049
+			fabric-transitive-access-wideners-v1: Fabric Transitive Access Wideners (v1) 6.3.17+f17a180c49
+		fabricloader: Fabric Loader 0.16.14
+			mixinextras: MixinExtras 0.4.1
+		factory_api: Factory API 2.2.4
+			team_reborn_energy: Energy 4.1.0
+		fullbrightnesstoggle: Full Brightness Toggle 4.3
+		java: OpenJDK 64-Bit Server VM 21
+		justzoom: Just Zoom 2.1.0
+		konkrete: Konkrete 1.9.11
+		legacy: Legacy4J 1.8.1
+			dev_isxander_libsdl4j: libsdl4j 3.1.9.075c033-66
+		minecraft: Minecraft 1.21.5
+		reeses-sodium-options: Reese's Sodium Options 1.8.3+mc1.21.4
+		sodium: Sodium 0.6.13+mc1.21.5
+		sodium-extra: Sodium Extra 0.6.3+mc1.21.5
+		sodium-fullbright: Sodium Fullbright 1.0.1
+		sodiumdynamiclights: Sodium Dynamic Lights 1.0.10
+			com_github_bawnorton_mixinsquared_mixinsquared-neoforge: mixinsquared-neoforge 0.2.0-beta.6
+			forgeconfigapiport: Forge Config API Port 21.5.1
+				com_electronwill_night-config_core: core 3.8.1
+				com_electronwill_night-config_toml: toml 3.8.1
+		sodiumextras: Sodium Extras 1.0.8
+			mixinsquared: MixinSquared 0.2.0-beta.6
+		sodiumoptionsapi: Sodium Options API 1.0.11
+		splitscreen: Splitscreen Support 0.9.0+1.21.5
+		txnilib: TxniLib 1.0.24
+	Launched Version: 1.21.5
+	Launcher name: PollyMC
+	Backend library: LWJGL version 3.3.3-snapshot
+	Backend API: AMD Custom GPU 0932 (radeonsi, vangogh, LLVM 18.1.8, DRM 3.59, 6.11.11-valve12-1-neptune-611-g517a46b477e1) GL version 4.6 (Core Profile) Mesa 24.3.4 (git-8d0948917e), AMD
+	Window size: 3840x1079
+	GFLW Platform: x11
+	Render Extensions: GL_KHR_debug, GL_ARB_vertex_attrib_binding, GL_ARB_direct_state_access
+	GL debug messages: 
+	Is Modded: Definitely; Client brand changed to 'fabric'
+	Universe: 400921fb54442d18
+	Type: Client (map_client.txt)
+	Graphics mode: fancy
+	Render Distance: 12/12 chunks
+	Resource Packs: vanilla, fabric, cubes-without-borders, fabric-api, fabric-api-base, fabric-api-lookup-api-v1, fabric-biome-api-v1, fabric-block-api-v1, fabric-block-view-api-v2, fabric-blockrenderlayer-v1, fabric-client-tags-api-v1, fabric-command-api-v1, fabric-command-api-v2, fabric-commands-v0, fabric-content-registries-v0, fabric-convention-tags-v1, fabric-convention-tags-v2, fabric-crash-report-info-v1, fabric-data-attachment-api-v1, fabric-data-generation-api-v1, fabric-dimensions-v1, fabric-entity-events-v1, fabric-events-interaction-v0, fabric-game-rule-api-v1, fabric-item-api-v1, fabric-item-group-api-v1, fabric-key-binding-api-v1, fabric-keybindings-v0, fabric-lifecycle-events-v1, fabric-loot-api-v2, fabric-loot-api-v3, fabric-message-api-v1, fabric-model-loading-api-v1, fabric-networking-api-v1, fabric-object-builder-api-v1, fabric-particles-v1, fabric-recipe-api-v1, fabric-registry-sync-v0, fabric-renderer-api-v1, fabric-renderer-indigo, fabric-rendering-data-attachment-v1, fabric-rendering-fluids-v1, fabric-rendering-v1, fabric-resource-conditions-api-v1, fabric-resource-loader-v0, fabric-screen-api-v1, fabric-screen-handler-api-v1, fabric-sound-api-v1, fabric-tag-api-v1, fabric-transfer-api-v1, fabric-transitive-access-wideners-v1, fabricloader, factory_api (incompatible), forgeconfigapiport, fullbrightnesstoggle (incompatible), justzoom (incompatible), legacy (incompatible), reeses-sodium-options, sodium, sodium-extra, sodium-fullbright, sodiumdynamiclights (incompatible), sodiumextras (incompatible), sodiumoptionsapi (incompatible), team_reborn_energy, txnilib (incompatible), programmer_art, fabric-item-group-api-v1_programmer_art, legacy_programmer_art, sodium_programmer_art, legacy:legacy_waters, legacy:legacy_resources
+	Current Language: en_us
+	Locale: en_US
+	System encoding: UTF-8
+	File encoding: UTF-8
+	CPU: 8x AMD Custom APU 0932

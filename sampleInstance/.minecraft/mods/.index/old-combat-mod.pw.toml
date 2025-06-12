@@ -1,0 +1,13 @@
+filename = 'old-combat-mod-1.1.1.jar'
+name = 'Old Combat Mod'
+side = 'server'
+
+[download]
+hash = '235d3663c4c35f5e66ce737cf142782ddaac346aaee4fc7243145a3cc5feb8bbbd0d9117dc2fc79837ea6869bdff300c78eb5ff6b14baa6977fbe7e33a37db3a'
+hash-format = 'sha512'
+mode = 'url'
+url = 'https://cdn.modrinth.com/data/dZ1APLkO/versions/UUtG1Pw2/old-combat-mod-1.1.1.jar'
+
+[update.modrinth]
+mod-id = 'dZ1APLkO'
+version = 'UUtG1Pw2'

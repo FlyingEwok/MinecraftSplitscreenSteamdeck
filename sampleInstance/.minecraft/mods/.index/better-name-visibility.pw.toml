@@ -1,0 +1,13 @@
+filename = 'name-visibility-2.0.2.jar'
+name = 'Better Name Visibility'
+side = 'client'
+
+[download]
+hash = '1fc11021add5b56b9d6343fdef73568c436844a8f87fa8198e34a617a4e99a8f64f4bbff87f96e18da706e0f531931748a4cb3905dace79284d4bdfeeaeb7033'
+hash-format = 'sha512'
+mode = 'url'
+url = 'https://cdn.modrinth.com/data/pSfNeCCY/versions/UX9XhQ6r/name-visibility-2.0.2.jar'
+
+[update.modrinth]
+mod-id = 'pSfNeCCY'
+version = 'UX9XhQ6r'

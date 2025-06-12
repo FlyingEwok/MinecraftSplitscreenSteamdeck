@@ -1,0 +1,18 @@
+[
+  {
+    "key": "fullbrightnesstoggle.key.togglebrightness.custom",
+    "color": "YELLOW"
+  },
+  {
+    "key": "controllable.key.open_controllable_settings",
+    "color": "BLUE"
+  },
+  {
+    "key": "key.advancements",
+    "color": "YELLOW"
+  },
+  {
+    "key": "key.name_visibility.toggleNames.custom",
+    "color": "DARK_PURPLE"
+  }
+]
