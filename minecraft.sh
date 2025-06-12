@@ -65,7 +65,7 @@ EOF
 #   $1 = PollyMC instance name (e.g., 1.21.5-1)
 #   $2 = Player name (e.g., P1)
 launchGame() {
-    kde-inhibit --power --screenSaver --colorCorrect --notifications /home/deck/.local/share/PollyMC/PollyMC-Linux-x86_64.AppImage -l "$1" -a "$2" &
+    kde-inhibit --power --screenSaver --colorCorrect --notifications ~/.local/share/PollyMC/PollyMC-Linux-x86_64.AppImage -l "$1" -a "$2" &
     sleep 10 # Give time for the instance to start (avoid race conditions)
 }
 
@@ -116,8 +116,8 @@ getControllerCount() {
 setSplitscreenModeForPlayer() {
     local player=$1
     local numberOfControllers=$2
-    local config_path="/home/deck/.local/share/PollyMC/instances/1.21.5-${player}/.minecraft/config/splitscreen.properties"
-    mkdir -p "$(dirname "$config_path")"
+    local config_path="~/.local/share/PollyMC/instances/1.21.5-${player}/.minecraft/config/splitscreen.properties"
+    mkdir -p "$(dirname $config_path)"
     local mode="FULLSCREEN"
     # Decide the splitscreen mode for this player based on total controllers
     case "$numberOfControllers" in
