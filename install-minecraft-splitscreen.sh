@@ -100,13 +100,6 @@ ________EOF
                 cp "$mod" ".minecraft/mods/"
             done
 
-            # Do NOT use the Fabric installer; let PollyMC handle Fabric Loader installation
-            # Remove the Fabric installer invocation
-
-            # Copy Minecraft jar and json
-            cp "$TEMP_DIR/1.21.5.jar" ".minecraft/versions/1.21.5/1.21.5.jar"
-            cp "$TEMP_DIR/1.21.5.json" ".minecraft/versions/1.21.5/1.21.5.json"
-
             # options.txt
             if [ ! -f ".minecraft/options.txt" ]; then
                 echo -e "onboardAccessibility:false\nskipMultiplayerWarning:true\ntutorialStep:none" > .minecraft/options.txt
@@ -172,9 +165,6 @@ ________________EOF
 }
 EOF
             fi
-
-            # Use Fabric installer to set up loader in this instance (latest: 0.16.14)
-            "$JAVA_PATH" -jar "$TEMP_DIR/fabric-installer-0.11.2.jar" client -dir ".minecraft" -mcversion 1.21.5 -loader 0.16.14 -noprofile
 
         popd
     done
