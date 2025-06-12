@@ -1,0 +1,110 @@
+{
+    "accounts": [
+        {
+            "active": true,
+            "entitlement": {
+                "canPlayMinecraft": true,
+                "ownsMinecraft": true
+            },
+            "profile": {
+                "capes": [
+                ],
+                "id": "99f7b67dff4a3921ab1855d7abaafc82",
+                "name": "P1",
+                "skin": {
+                    "id": "",
+                    "url": "",
+                    "variant": ""
+                }
+            },
+            "type": "Offline",
+            "ygg": {
+                "extra": {
+                    "clientToken": "bf6cb3d6c80d4448a932522de4a51d51",
+                    "userName": "P1"
+                },
+                "iat": 1745307597,
+                "token": "0"
+            }
+        },
+        {
+            "entitlement": {
+                "canPlayMinecraft": true,
+                "ownsMinecraft": true
+            },
+            "profile": {
+                "capes": [
+                ],
+                "id": "45c6ab0a786e3272b6806c93ba62c2b4",
+                "name": "P2",
+                "skin": {
+                    "id": "",
+                    "url": "",
+                    "variant": ""
+                }
+            },
+            "type": "Offline",
+            "ygg": {
+                "extra": {
+                    "clientToken": "878b7cd9a9e34505b64efde6ce1f9470",
+                    "userName": "P2"
+                },
+                "iat": 1745307602,
+                "token": "0"
+            }
+        },
+        {
+            "entitlement": {
+                "canPlayMinecraft": true,
+                "ownsMinecraft": true
+            },
+            "profile": {
+                "capes": [
+                ],
+                "id": "ac4e5ee749823b818186f0480155d43d",
+                "name": "P3",
+                "skin": {
+                    "id": "",
+                    "url": "",
+                    "variant": ""
+                }
+            },
+            "type": "Offline",
+            "ygg": {
+                "extra": {
+                    "clientToken": "de836a1d55a448e091cf21ed2800bf1a",
+                    "userName": "P3"
+                },
+                "iat": 1745307605,
+                "token": "0"
+            }
+        },
+        {
+            "entitlement": {
+                "canPlayMinecraft": true,
+                "ownsMinecraft": true
+            },
+            "profile": {
+                "capes": [
+                ],
+                "id": "35b0aa2bc5633d5b9f98490635965826",
+                "name": "P4",
+                "skin": {
+                    "id": "",
+                    "url": "",
+                    "variant": ""
+                }
+            },
+            "type": "Offline",
+            "ygg": {
+                "extra": {
+                    "clientToken": "5d36c1ee9be04fe8a0d256cbbd3af3d2",
+                    "userName": "P4"
+                },
+                "iat": 1745307609,
+                "token": "0"
+            }
+        }
+    ],
+    "formatVersion": 3
+}

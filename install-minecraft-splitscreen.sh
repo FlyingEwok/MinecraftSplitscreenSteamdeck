@@ -120,36 +120,8 @@ fi
 JAVA_PATH="$JDK21_DIR/bin/java"
 
 # --------- CONFIGURE OFFLINE ACCOUNTS FOR EACH PLAYER ---------
-echo "[INFO] Configuring offline accounts for P1, P2, P3, P4..."
-ACCOUNTS_FILE="$POLLYMC_DIR/accounts.json"
-cat > "$ACCOUNTS_FILE" <<EOF
-[
-  {
-    "type": "offline",
-    "username": "P1",
-    "uuid": "00000000-0000-0000-0000-000000000001",
-    "displayName": "P1"
-  },
-  {
-    "type": "offline",
-    "username": "P2",
-    "uuid": "00000000-0000-0000-0000-000000000002",
-    "displayName": "P2"
-  },
-  {
-    "type": "offline",
-    "username": "P3",
-    "uuid": "00000000-0000-0000-0000-000000000003",
-    "displayName": "P3"
-  },
-  {
-    "type": "offline",
-    "username": "P4",
-    "uuid": "00000000-0000-0000-0000-000000000004",
-    "displayName": "P4"
-  }
-]
-EOF
+echo "[INFO] Copying accounts.json from script directory to PollyMC config..."
+cp "$(dirname "$0")/accounts.json" "$POLLYMC_DIR/accounts.json"
 
 # --------- INSTALL FABRIC LOADER IN EACH PROFILE ---------
 # For each PollyMC instance, create or update the instance.cfg to use Fabric Loader and the downloaded JDK 21
