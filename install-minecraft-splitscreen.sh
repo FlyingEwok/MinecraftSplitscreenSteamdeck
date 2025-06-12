@@ -100,8 +100,8 @@ ________EOF
                 cp "$mod" ".minecraft/mods/"
             done
 
-            # Use Fabric installer to set up loader in this instance (latest: 0.16.14)
-            "$JAVA_PATH" -jar "$TEMP_DIR/fabric-installer-0.11.2.jar" client -dir ".minecraft" -mcversion 1.21.5 -loader 0.16.14 -noprofile
+            # Do NOT use the Fabric installer; let PollyMC handle Fabric Loader installation
+            # Remove the Fabric installer invocation
 
             # Copy Minecraft jar and json
             cp "$TEMP_DIR/1.21.5.jar" ".minecraft/versions/1.21.5/1.21.5.jar"
