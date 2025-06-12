@@ -1,132 +1,115 @@
 #!/bin/bash
-# Robust, portable, atomic Minecraft splitscreen setup for PollyMC using Fabric and user mods
-set -e
+targetDir=$HOME/.local/share/PollyMC
+mkdir -p $targetDir
+pushd $targetDir
 
-POLLYMC_DIR="$HOME/.local/share/PollyMC"
-MINECRAFT_VERSION="1.21.5"
-FABRIC_LOADER_VERSION="0.15.7"
-FABRIC_VERSION_DIR="fabric-loader-${FABRIC_LOADER_VERSION}-${MINECRAFT_VERSION}"
-JAVA_DIR="$POLLYMC_DIR/jdk-21"
-JAVA_PATH="$JAVA_DIR/bin/java"
-TEMP_DIR=$(mktemp -d)
-
-# Ensure PollyMC directory exists before cd
-mkdir -p "$POLLYMC_DIR"
-cd "$POLLYMC_DIR"
-
-# --- Download PollyMC AppImage ---
-if [ ! -f "PollyMC-Linux-x86_64.AppImage" ]; then
-    wget https://github.com/fn2006/PollyMC/releases/download/8.0/PollyMC-Linux-x86_64.AppImage
-    chmod +x PollyMC-Linux-x86_64.AppImage
-fi
-
-# --- Download JDK 21 ---
-if [ ! -f "$JAVA_PATH" ]; then
-    curl -L https://download.oracle.com/java/21/latest/jdk-21_linux-x64_bin.tar.gz | tar xz -C "$POLLYMC_DIR"
-    # Move to jdk-21 if extracted as something else
-    JDK_EXTRACTED=$(ls -d $POLLYMC_DIR/jdk-21* | grep -v "$JAVA_DIR" | head -1)
-    if [ -n "$JDK_EXTRACTED" ] && [ "$JDK_EXTRACTED" != "$JAVA_DIR" ]; then
-        mv "$JDK_EXTRACTED" "$JAVA_DIR"
+    if [ ! -f "PollyMC-Linux-x86_64.AppImage" ]; then
+        # download pollymc
+        wget https://github.com/fn2006/PollyMC/releases/download/8.0/PollyMC-Linux-x86_64.AppImage
+        chmod +x PollyMC-Linux-x86_64.AppImage
     fi
-fi
 
-# --- Create pollymc.cfg if missing ---
-if [ ! -f pollymc.cfg ]; then
-    cat <<EOF > pollymc.cfg
-[General]
-ApplicationTheme=system
-ConfigVersion=1.2
-FlameKeyShouldBeFetchedOnStartup=false
-IconTheme=pe_colored
-JavaPath=jdk-21/bin/java
-Language=en_US
-LastHostname=$HOSTNAME
-MaxMemAlloc=4096
-MinMemAlloc=512
-EOF
-fi
+    if [ ! -f "jdk-21/bin/java" ]; then
+        # download java 21
+        curl -L https://download.oracle.com/java/21/latest/jdk-21_linux-x64_bin.tar.gz | tar xz
+        # Move to jdk-21 if extracted as something else
+        JDK_EXTRACTED=$(ls -d jdk-21* | grep -v "jdk-21" | head -1)
+        if [ -n "$JDK_EXTRACTED" ] && [ "$JDK_EXTRACTED" != "jdk-21" ]; then
+            mv "$JDK_EXTRACTED" jdk-21
+        fi
+    fi
 
-# --- Download all mods to temp dir ---
-MOD_URLS=(
-  "https://cdn.modrinth.com/data/yJgqfSDR/versions/9U4TVf3r/splitscreen-0.9.0%2B1.21.5.jar"
-  "https://media.forgecdn.net/files/6413/241/controllable-0.19.0-mc1.21.5-fabric.jar"
-  "https://cdn.modrinth.com/data/cudtvDnd/versions/96FYffnc/IAS-Fabric-1.21.5-9.0.2.jar"
-  "https://cdn.modrinth.com/data/mOgUt4GM/versions/T7GjZmwP/modmenu-14.0.0-rc.2.jar"
-  "https://cdn.modrinth.com/data/AANobbMI/versions/DA250htH/sodium-fabric-0.6.13%2Bmc1.21.5.jar"
-  "https://cdn.modrinth.com/data/gvQqBUqZ/versions/VWYoZjBF/lithium-fabric-0.16.2%2Bmc1.21.5.jar"
-  "https://cdn.modrinth.com/data/PtjYWJkn/versions/E5w6eZNE/sodium-extra-fabric-0.6.3%2B1.21.5.jar"
-  "https://cdn.modrinth.com/data/1eAoo2KR/versions/5yBEzonb/yet_another_config_lib_v3-3.6.6%2B1.21.5-fabric.jar"
-  "https://cdn.modrinth.com/data/YL57xq9U/versions/U6evbjd0/iris-fabric-1.8.11%2Bmc1.21.5.jar"
-  "https://cdn.modrinth.com/data/3IuO68q1/versions/JyVlkrSf/puzzle-fabric-2.1.0%2B1.21.5.jar"
-  "https://cdn.modrinth.com/data/uXXizFIs/versions/CtMpt7Jr/ferritecore-8.0.0-fabric.jar"
-  "https://cdn.modrinth.com/data/NNAgCjsB/versions/29GV7fju/entityculling-fabric-1.7.4-mc1.21.5.jar"
-  "https://cdn.modrinth.com/data/yBW8D80W/versions/STvJaSpP/lambdynamiclights-4.2.7%2B1.21.5.jar"
-  "https://cdn.modrinth.com/data/pSfNeCCY/versions/UX9XhQ6r/name-visibility-2.0.2.jar"
-  "https://cdn.modrinth.com/data/iAiqcykM/versions/HZHRCuLM/justzoom_fabric_2.1.0_MC_1.21.5.jar"
-  "https://cdn.modrinth.com/data/aEK1KhsC/versions/PeVUcOGT/fullbrightnesstoggle-1.21.5-4.3.jar"
-  "https://cdn.modrinth.com/data/dZ1APLkO/versions/UUtG1Pw2/old-combat-mod-1.1.1.jar"
-)
-for url in "${MOD_URLS[@]}"; do
-  fname="$TEMP_DIR/$(basename "${url%%\?*}")"
-  [ -f "$fname" ] || curl -L "$url" -o "$fname"
-done
+    if [ ! -f pollymc.cfg ]; then
+        # create pollymc.cfg
+        sed 's/^            //' <<________EOF > pollymc.cfg
+            [General]
+            ApplicationTheme=system
+            ConfigVersion=1.2
+            FlameKeyShouldBeFetchedOnStartup=false
+            IconTheme=pe_colored
+            JavaPath=jdk-21/bin/java
+            Language=en_US
+            LastHostname=$HOSTNAME
+            MaxMemAlloc=4096
+            MinMemAlloc=512
+________EOF
+    fi
 
-# --- Download Fabric loader jar and manifest ---
-FABRIC_LOADER_JAR_URL="https://maven.fabricmc.net/net/fabricmc/fabric-loader/${FABRIC_LOADER_VERSION}/fabric-loader-${FABRIC_LOADER_VERSION}.jar"
-FABRIC_MANIFEST_URL="https://meta.fabricmc.net/v2/versions/loader/${MINECRAFT_VERSION}/${FABRIC_LOADER_VERSION}/profile/json"
+    # create the 4 game instances for 1.21.5
+    for i in {1..4}; do
+        mkdir -p "instances/1.21.5-$i/.minecraft/mods" "instances/1.21.5-$i/.minecraft/config" "instances/1.21.5-$i/.minecraft/versions/fabric-loader-0.15.7-1.21.5" "instances/1.21.5-$i/.minecraft/versions/1.21.5"
+        pushd "instances/1.21.5-$i"
 
-# --- Download Minecraft client jar and version json ---
-if ! command -v jq &>/dev/null; then
-  sudo apt-get update && sudo apt-get install -y jq
-fi
-curl -sSL "https://piston-meta.mojang.com/mc/game/version_manifest_v2.json" -o "$TEMP_DIR/version_manifest.json"
-VERSION_URL=$(jq -r --arg VER "$MINECRAFT_VERSION" '.versions[] | select(.id==$VER) | .url' "$TEMP_DIR/version_manifest.json")
-curl -sSL "$VERSION_URL" -o "$TEMP_DIR/mc_version.json"
-JAR_URL=$(jq -r '.downloads.client.url' "$TEMP_DIR/mc_version.json")
-curl -sSL "$JAR_URL" -o "$TEMP_DIR/$MINECRAFT_VERSION.jar"
-cp "$TEMP_DIR/mc_version.json" "$TEMP_DIR/$MINECRAFT_VERSION.json"
+            # Download all mods (if not already present)
+            declare -a MOD_URLS=(
+              "https://cdn.modrinth.com/data/yJgqfSDR/versions/9U4TVf3r/splitscreen-0.9.0%2B1.21.5.jar"
+              "https://media.forgecdn.net/files/6413/241/controllable-0.19.0-mc1.21.5-fabric.jar"
+              "https://cdn.modrinth.com/data/cudtvDnd/versions/96FYffnc/IAS-Fabric-1.21.5-9.0.2.jar"
+              "https://cdn.modrinth.com/data/mOgUt4GM/versions/T7GjZmwP/modmenu-14.0.0-rc.2.jar"
+              "https://cdn.modrinth.com/data/AANobbMI/versions/DA250htH/sodium-fabric-0.6.13%2Bmc1.21.5.jar"
+              "https://cdn.modrinth.com/data/gvQqBUqZ/versions/VWYoZjBF/lithium-fabric-0.16.2%2Bmc1.21.5.jar"
+              "https://cdn.modrinth.com/data/PtjYWJkn/versions/E5w6eZNE/sodium-extra-fabric-0.6.3%2B1.21.5.jar"
+              "https://cdn.modrinth.com/data/1eAoo2KR/versions/5yBEzonb/yet_another_config_lib_v3-3.6.6%2B1.21.5-fabric.jar"
+              "https://cdn.modrinth.com/data/YL57xq9U/versions/U6evbjd0/iris-fabric-1.8.11%2Bmc1.21.5.jar"
+              "https://cdn.modrinth.com/data/3IuO68q1/versions/JyVlkrSf/puzzle-fabric-2.1.0%2B1.21.5.jar"
+              "https://cdn.modrinth.com/data/uXXizFIs/versions/CtMpt7Jr/ferritecore-8.0.0-fabric.jar"
+              "https://cdn.modrinth.com/data/NNAgCjsB/versions/29GV7fju/entityculling-fabric-1.7.4-mc1.21.5.jar"
+              "https://cdn.modrinth.com/data/yBW8D80W/versions/STvJaSpP/lambdynamiclights-4.2.7%2B1.21.5.jar"
+              "https://cdn.modrinth.com/data/pSfNeCCY/versions/UX9XhQ6r/name-visibility-2.0.2.jar"
+              "https://cdn.modrinth.com/data/iAiqcykM/versions/HZHRCuLM/justzoom_fabric_2.1.0_MC_1.21.5.jar"
+              "https://cdn.modrinth.com/data/aEK1KhsC/versions/PeVUcOGT/fullbrightnesstoggle-1.21.5-4.3.jar"
+              "https://cdn.modrinth.com/data/dZ1APLkO/versions/UUtG1Pw2/old-combat-mod-1.1.1.jar"
+            )
+            for url in "${MOD_URLS[@]}"; do
+                modfile=".minecraft/mods/$(basename "${url%%\?*}")"
+                if [ ! -f "$modfile" ]; then
+                    wget -O "$modfile" "$url"
+                fi
+            done
 
-# --- Create 4 instances ---
-for i in {1..4}; do
-  INSTANCE_DIR="$POLLYMC_DIR/instances/$MINECRAFT_VERSION-$i"
-  MODS_DIR="$INSTANCE_DIR/.minecraft/mods"
-  CONFIG_DIR="$INSTANCE_DIR/.minecraft/config"
-  VERSIONS_DIR="$INSTANCE_DIR/.minecraft/versions"
-  FABRIC_DIR="$VERSIONS_DIR/$FABRIC_VERSION_DIR"
-  MC_VER_DIR="$INSTANCE_DIR/.minecraft/versions/$MINECRAFT_VERSION"
-  mkdir -p "$MODS_DIR" "$CONFIG_DIR" "$FABRIC_DIR" "$MC_VER_DIR"
+            # Download Fabric loader jar and manifest
+            if [ ! -f ".minecraft/versions/fabric-loader-0.15.7-1.21.5/fabric-loader-0.15.7.jar" ]; then
+                wget -O ".minecraft/versions/fabric-loader-0.15.7-1.21.5/fabric-loader-0.15.7.jar" "https://maven.fabricmc.net/net/fabricmc/fabric-loader/0.15.7/fabric-loader-0.15.7.jar"
+            fi
+            if [ ! -f ".minecraft/versions/fabric-loader-0.15.7-1.21.5/fabric-loader-0.15.7-1.21.5.json" ]; then
+                wget -O ".minecraft/versions/fabric-loader-0.15.7-1.21.5/fabric-loader-0.15.7-1.21.5.json" "https://meta.fabricmc.net/v2/versions/loader/1.21.5/0.15.7/profile/json"
+            fi
 
-  # Copy all mods
-  for mod in "$TEMP_DIR"/*.jar; do
-    cp "$mod" "$MODS_DIR/"
-  done
+            # Download Minecraft jar and json
+            if [ ! -f ".minecraft/versions/1.21.5/1.21.5.jar" ]; then
+                if ! command -v jq &>/dev/null; then
+                  sudo apt-get update && sudo apt-get install -y jq
+                fi
+                curl -sSL "https://piston-meta.mojang.com/mc/game/version_manifest_v2.json" -o version_manifest.json
+                VERSION_URL=$(jq -r --arg VER "1.21.5" '.versions[] | select(.id==$VER) | .url' version_manifest.json)
+                curl -sSL "$VERSION_URL" -o mc_version.json
+                JAR_URL=$(jq -r '.downloads.client.url' mc_version.json)
+                curl -sSL "$JAR_URL" -o ".minecraft/versions/1.21.5/1.21.5.jar"
+                mv mc_version.json ".minecraft/versions/1.21.5/1.21.5.json"
+                rm version_manifest.json
+            fi
 
-  # Download Fabric loader jar and manifest if not present
-  [ -f "$FABRIC_DIR/fabric-loader-${FABRIC_LOADER_VERSION}.jar" ] || curl -L "$FABRIC_LOADER_JAR_URL" -o "$FABRIC_DIR/fabric-loader-${FABRIC_LOADER_VERSION}.jar"
-  [ -f "$FABRIC_DIR/$FABRIC_VERSION_DIR.json" ] || curl -L "$FABRIC_MANIFEST_URL" -o "$FABRIC_DIR/$FABRIC_VERSION_DIR.json"
+            # options.txt
+            if [ ! -f ".minecraft/options.txt" ]; then
+                echo -e "onboardAccessibility:false\nskipMultiplayerWarning:true\ntutorialStep:none" > .minecraft/options.txt
+            fi
 
-  # Copy Minecraft jar and json
-  cp "$TEMP_DIR/$MINECRAFT_VERSION.jar" "$MC_VER_DIR/$MINECRAFT_VERSION.jar"
-  cp "$TEMP_DIR/$MINECRAFT_VERSION.json" "$MC_VER_DIR/$MINECRAFT_VERSION.json"
+            # instance.cfg
+            if [ ! -f "instance.cfg" ]; then
+                sed 's/^                    //' <<________________EOF > "instance.cfg"
+                    [General]
+                    ConfigVersion=1.2
+                    InstanceType=OneSix
+                    JavaPath=jdk-21/bin/java
+                    OverrideJavaLocation=true
+                    iconKey=default
+                    name=1.21.5-$i
+________________EOF
+            fi
 
-  # options.txt
-  if [ ! -f "$INSTANCE_DIR/.minecraft/options.txt" ]; then
-    echo -e "onboardAccessibility:false\nskipMultiplayerWarning:true\ntutorialStep:none" > "$INSTANCE_DIR/.minecraft/options.txt"
-  fi
-
-  # instance.cfg
-  cat <<EOF > "$INSTANCE_DIR/instance.cfg"
-[General]
-ConfigVersion=1.2
-InstanceType=OneSix
-JavaPath=jdk-21/bin/java
-OverrideJavaLocation=true
-iconKey=default
-name=$MINECRAFT_VERSION-$i
-EOF
-
-  # mmc-pack.json
-  cat <<EOF > "$INSTANCE_DIR/mmc-pack.json"
+            # mmc-pack.json
+            if [ ! -f "mmc-pack.json" ]; then
+                cat <<EOF > "mmc-pack.json"
 {
   "components": [
     {
@@ -142,48 +125,40 @@ EOF
       "cachedRequires": [
         { "suggests": "3.3.1", "uid": "org.lwjgl3" }
       ],
-      "cachedVersion": "$MINECRAFT_VERSION",
+      "cachedVersion": "1.21.5",
       "important": true,
       "uid": "net.minecraft",
-      "version": "$MINECRAFT_VERSION"
+      "version": "1.21.5"
     },
     {
       "cachedName": "Fabric Loader",
       "cachedRequires": [
-        { "equals": "$MINECRAFT_VERSION", "uid": "net.minecraft" }
+        { "equals": "1.21.5", "uid": "net.minecraft" }
       ],
-      "cachedVersion": "$FABRIC_LOADER_VERSION",
+      "cachedVersion": "0.15.7",
       "uid": "net.fabricmc.fabric-loader",
-      "version": "$FABRIC_VERSION_DIR"
+      "version": "fabric-loader-0.15.7-1.21.5"
     }
   ],
   "formatVersion": 1
 }
 EOF
+            fi
 
-done
+        popd
+    done
 
-# --- Copy or create accounts.json ---
-if [ ! -f "$POLLYMC_DIR/accounts.json" ]; then
-  echo '[{"type":"offline","username":"Player1","uuid":"00000000-0000-0000-0000-000000000001"}]' > "$POLLYMC_DIR/accounts.json"
-fi
+    # --- Copy or create accounts.json ---
+    if [ ! -f "accounts.json" ]; then
+        # create accounts.json
+        sed 's/^            //' <<________EOF > accounts.json
+            [{"type":"offline","username":"Player1","uuid":"00000000-0000-0000-0000-000000000001"}]
+________EOF
+    fi
 
-# --- Download launcher script ---
-wget -O "$POLLYMC_DIR/minecraft.sh" https://raw.githubusercontent.com/FlyingEwok/MinecraftSplitscreenSteamdeck/main/minecraft.sh
-chmod +x "$POLLYMC_DIR/minecraft.sh"
+    # download the launch wrapper
+    rm -f minecraft.sh
+    wget https://raw.githubusercontent.com/FlyingEwok/MinecraftSplitscreenSteamdeck/main/minecraft.sh
+    chmod +x minecraft.sh
 
-# --- Create desktop shortcut ---
-cat <<EOF > "$HOME/Desktop/Minecraft-Splitscreen.desktop"
-[Desktop Entry]
-Name=Minecraft Splitscreen
-Exec=$POLLYMC_DIR/minecraft.sh
-Type=Application
-Icon=application-x-executable
-Terminal=false
-EOF
-chmod +x "$HOME/Desktop/Minecraft-Splitscreen.desktop"
-
-# --- Clean up temp dir ---
-rm -rf "$TEMP_DIR"
-
-echo "[SUCCESS] Minecraft Splitscreen setup complete! Launch from desktop or $POLLYMC_DIR/minecraft.sh"
+popd
