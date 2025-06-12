@@ -88,14 +88,21 @@ ________EOF
 
 popd
 
-# --- (Optional) Add the launch wrapper to Steam automatically ---
-# This section is commented out by default. Uncomment to auto-add Minecraft to Steam library.
-# if ! grep -q local/share/PollyMC/minecraft ~/.steam/steam/userdata/*/config/shortcuts.vdf; then
-#     steam -shutdown
-#     while pgrep -F ~/.steam/steam.pid; do
-#         sleep 1
-#     done
-#     [ -f shortcuts-backup.tar.xz ] || tar cJf shortcuts-backup.tar.xz ~/.steam/steam/userdata/*/config/shortcuts.vdf
-#     curl https://raw.githubusercontent.com/ArnoldSmith86/minecraft-splitscreen/refs/heads/main/add-to-steam.py | python
-#     nohup steam &
-# fi
+# --- Optionally add the launch wrapper to Steam automatically ---
+read -p "Do you want to add the Minecraft launch wrapper to Steam? [y/N]: " add_to_steam
+if [[ "$add_to_steam" =~ ^[Yy]$ ]]; then
+    if ! grep -q local/share/PollyMC/minecraft ~/.steam/steam/userdata/*/config/shortcuts.vdf 2>/dev/null; then
+        echo "Adding Minecraft launch wrapper to Steam..."
+        steam -shutdown
+        while pgrep -F ~/.steam/steam.pid; do
+            sleep 1
+        done
+        [ -f $targetDir/shortcuts-backup.tar.xz ] || tar cJf $targetDir/shortcuts-backup.tar.xz ~/.steam/steam/userdata/*/config/shortcuts.vdf
+        curl https://raw.githubusercontent.com/ArnoldSmith86/minecraft-splitscreen/refs/heads/main/add-to-steam.py | python
+        nohup steam &
+    else
+        echo "Minecraft launch wrapper already present in Steam shortcuts."
+    fi
+else
+    echo "Skipping adding Minecraft launch wrapper to Steam."
+fi
