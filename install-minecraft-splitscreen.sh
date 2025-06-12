@@ -192,6 +192,8 @@ for i in 1 2 3 4; do
     if [ "$i" -eq 1 ]; then
         # Download Minecraft and Fabric loader for instance 1 only if not already present
         if [ ! -f "$INSTANCE1_DIR/.minecraft/versions/$MINECRAFT_VERSION/$MINECRAFT_VERSION.jar" ]; then
+            echo "[INFO] Launching PollyMC to generate launcher profile for instance 1..."
+            "$POLLYMC_DIR/PollyMC-Linux-x86_64.AppImage" --launch "$MINECRAFT_VERSION-1" --no-gui --quit || true
             echo "[INFO] Downloading Minecraft and Fabric for instance 1..."
             "$JAVA_PATH" -jar "$FABRIC_INSTALLER_JAR" client -mcversion $MINECRAFT_VERSION -dir "$INSTANCE1_DIR/.minecraft" --noprofile --downloadMinecraft
             "$POLLYMC_DIR/PollyMC-Linux-x86_64.AppImage" --launch "$MINECRAFT_VERSION-1" --no-gui --quit || true
@@ -203,6 +205,8 @@ for i in 1 2 3 4; do
         if [ -d "$INSTANCE1_DIR/.minecraft/versions/$MINECRAFT_VERSION" ]; then
             echo "[INFO] Copying Minecraft core files from instance 1 to instance $i..."
             rsync -a --exclude 'mods' --exclude 'saves' --exclude 'options.txt' --exclude 'logs' --exclude 'crash-reports' --exclude 'screenshots' --exclude 'resourcepacks' --exclude 'shaderpacks' "$INSTANCE1_DIR/.minecraft/" "$INSTANCE_DIR/.minecraft/"
+            echo "[INFO] Launching PollyMC to generate launcher profile for instance $i..."
+            "$POLLYMC_DIR/PollyMC-Linux-x86_64.AppImage" --launch "$MINECRAFT_VERSION-$i" --no-gui --quit || true
         else
             echo "[WARN] Minecraft not found in instance 1. Skipping copy for instance $i."
         fi
