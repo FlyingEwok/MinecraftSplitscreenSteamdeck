@@ -3,8 +3,6 @@
 
 # But not these scripts and the .gitignore file itself
 !.gitignore
-!add-to-steam.py
-!add-to-steam.sh
 !install-minecraft-splitscreen.sh
 !minecraft.sh
 !accounts.json
