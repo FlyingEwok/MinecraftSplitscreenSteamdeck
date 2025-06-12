@@ -149,9 +149,19 @@ ________________EOF
       "version": "1.21.5"
     },
     {
-      "cachedName": "Fabric Loader",
+      "cachedName": "Intermediary Mappings",
       "cachedRequires": [
         { "equals": "1.21.5", "uid": "net.minecraft" }
+      ],
+      "cachedVersion": "1.21.5",
+      "uid": "net.fabricmc.intermediary",
+      "version": "1.21.5"
+    },
+    {
+      "cachedName": "Fabric Loader",
+      "cachedRequires": [
+        { "equals": "1.21.5", "uid": "net.minecraft" },
+        { "equals": "1.21.5", "uid": "net.fabricmc.intermediary" }
       ],
       "cachedVersion": "0.16.14",
       "uid": "net.fabricmc.fabric-loader",
