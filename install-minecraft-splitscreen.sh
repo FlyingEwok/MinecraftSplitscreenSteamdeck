@@ -37,10 +37,10 @@ LAMB_DYNAMIC_LIGHTS_MOD_URL="https://cdn.modrinth.com/data/yBW8D80W/versions/STv
 BETTER_NAME_VISIBILITY_MOD_URL="https://cdn.modrinth.com/data/pSfNeCCY/versions/UX9XhQ6r/name-visibility-2.0.2.jar"
 JUST_ZOOM_MOD_URL="https://cdn.modrinth.com/data/iAiqcykM/versions/HZHRCuLM/justzoom_fabric_2.1.0_MC_1.21.5.jar"
 FULL_BRIGHTNESS_TOGGLE_MOD_URL="https://cdn.modrinth.com/data/aEK1KhsC/versions/PeVUcOGT/fullbrightnesstoggle-1.21.5-4.3.jar"
+OLD_COMBAT_MOD_URL="https://cdn.modrinth.com/data/dZ1APLkO/versions/UUtG1Pw2/old-combat-mod-1.1.1.jar"
 MINECRAFT_VERSION="1.21.5"
 MODS_DIR="$POLLYMC_DIR/instances/$MINECRAFT_VERSION-1/.minecraft/mods"
 LAUNCHER_SCRIPT_URL="https://raw.githubusercontent.com/FlyingEwok/MinecraftSplitscreenSteamdeck/main/minecraft.sh"
-OLD_COMBAT_MOD_URL="https://cdn.modrinth.com/data/dZ1APLkO/versions/UUtG1Pw2/old-combat-mod-1.1.1.jar"
 
 # Helper: Copy a mod to all instance mods folders
 copy_mod_to_all_instances() {
@@ -57,102 +57,72 @@ mkdir -p "$POLLYMC_DIR/instances/$MINECRAFT_VERSION-2/.minecraft/mods"
 mkdir -p "$POLLYMC_DIR/instances/$MINECRAFT_VERSION-3/.minecraft/mods"
 mkdir -p "$POLLYMC_DIR/instances/$MINECRAFT_VERSION-4/.minecraft/mods"
 
+# --------- CREATE TEMP DIRECTORY FOR DOWNLOADS ---------
+# Create a temporary directory for all downloads to avoid file clashes and ensure atomic operations
+TEMP_DIR=$(mktemp -d)
+echo "[INFO] Using temp directory: $TEMP_DIR"
+
 # --------- DOWNLOAD POLLYMC APPIMAGE ---------
+# Download the PollyMC AppImage to the temp directory, then move it to the PollyMC directory
 echo "[INFO] Downloading PollyMC AppImage..."
-curl -L "$POLLYMC_APPIMAGE_URL" -o "$POLLYMC_DIR/PollyMC-Linux-x86_64.AppImage"
-chmod +x "$POLLYMC_DIR/PollyMC-Linux-x86_64.AppImage"
+curl -L "$POLLYMC_APPIMAGE_URL" -o "$TEMP_DIR/PollyMC-Linux-x86_64.AppImage"
+chmod +x "$TEMP_DIR/PollyMC-Linux-x86_64.AppImage"
+mv "$TEMP_DIR/PollyMC-Linux-x86_64.AppImage" "$POLLYMC_DIR/PollyMC-Linux-x86_64.AppImage"
 
-# --------- DOWNLOAD SPLITSCREEN MOD ---------
-echo "[INFO] Downloading splitscreen mod..."
-curl -L "$SPLITSCREEN_MOD_URL" -o "$MODS_DIR/splitscreen.jar"
-copy_mod_to_all_instances "$MODS_DIR/splitscreen.jar"
+# --------- DOWNLOAD MODS TO TEMP DIR ---------
+# Download all required mods into the temp directory
+echo "[INFO] Downloading mods to temp directory..."
+curl -L "$SPLITSCREEN_MOD_URL" -o "$TEMP_DIR/splitscreen.jar"
+curl -L "$CONTROLLER_MOD_URL" -o "$TEMP_DIR/controllable.jar"
+curl -L "$IN_GAME_ACCOUNT_SWITCHER_URL" -o "$TEMP_DIR/in-game-account-switcher.jar"
+curl -L "$MOD_MENU_URL" -o "$TEMP_DIR/modmenu.jar"
+curl -L "$SODIUM_MOD_URL" -o "$TEMP_DIR/sodium-fabric-0.6.13+mc1.21.5.jar"
+curl -L "$LITHIUM_MOD_URL" -o "$TEMP_DIR/lithium.jar"
+curl -L "$SODIUM_EXTRA_MOD_URL" -o "$TEMP_DIR/sodium-extra.jar"
+curl -L "$YACL_MOD_URL" -o "$TEMP_DIR/yacl.jar"
+curl -L "$IRIS_MOD_URL" -o "$TEMP_DIR/iris.jar"
+curl -L "$PUZZLE_MOD_URL" -o "$TEMP_DIR/puzzle.jar"
+curl -L "$FERRITECORE_MOD_URL" -o "$TEMP_DIR/ferritecore.jar"
+curl -L "$ENTITYCULLING_MOD_URL" -o "$TEMP_DIR/entityculling.jar"
+curl -L "$LAMB_DYNAMIC_LIGHTS_MOD_URL" -o "$TEMP_DIR/lambdynamiclights.jar"
+curl -L "$BETTER_NAME_VISIBILITY_MOD_URL" -o "$TEMP_DIR/betternamevisibility.jar"
+curl -L "$JUST_ZOOM_MOD_URL" -o "$TEMP_DIR/justzoom.jar"
+curl -L "$FULL_BRIGHTNESS_TOGGLE_MOD_URL" -o "$TEMP_DIR/fullbrightnesstoggle.jar"
+curl -L "$OLD_COMBAT_MOD_URL" -o "$TEMP_DIR/old-combat-mod.jar"
 
-# --------- DOWNLOAD CONTROLLER MOD ---------
-echo "[INFO] Downloading controller mod..."
-curl -L "$CONTROLLER_MOD_URL" -o "$MODS_DIR/controllable.jar"
-copy_mod_to_all_instances "$MODS_DIR/controllable.jar"
+# Copy all downloaded mods from temp dir to the first instance's mods directory
+cp "$TEMP_DIR"/*.jar "$MODS_DIR/"
+# Use helper function to copy each mod to all other instance mods folders
+for modfile in "$MODS_DIR"/*.jar; do
+    copy_mod_to_all_instances "$modfile"
+done
 
-# --------- DOWNLOAD IN-GAME ACCOUNT SWITCHER MOD ---------
-echo "[INFO] Downloading In-Game Account Switcher mod..."
-curl -L "$IN_GAME_ACCOUNT_SWITCHER_URL" -o "$MODS_DIR/in-game-account-switcher.jar"
-copy_mod_to_all_instances "$MODS_DIR/in-game-account-switcher.jar"
-
-# --------- DOWNLOAD MOD MENU MOD ---------
-echo "[INFO] Downloading Mod Menu mod..."
-curl -L "$MOD_MENU_URL" -o "$MODS_DIR/modmenu.jar"
-copy_mod_to_all_instances "$MODS_DIR/modmenu.jar"
-
-# --------- DOWNLOAD SODIUM MOD ---------
-echo "[INFO] Downloading Sodium mod..."
-curl -L "$SODIUM_MOD_URL" -o "$MODS_DIR/sodium-fabric-0.6.13+mc1.21.5.jar"
-copy_mod_to_all_instances "$MODS_DIR/sodium-fabric-0.6.13+mc1.21.5.jar"
-
-# --------- DOWNLOAD LITHIUM MOD ---------
-echo "[INFO] Downloading Lithium mod..."
-curl -L "$LITHIUM_MOD_URL" -o "$MODS_DIR/lithium.jar"
-copy_mod_to_all_instances "$MODS_DIR/lithium.jar"
-
-# --------- DOWNLOAD SODIUM EXTRA MOD ---------
-echo "[INFO] Downloading Sodium Extra mod..."
-curl -L "$SODIUM_EXTRA_MOD_URL" -o "$MODS_DIR/sodium-extra.jar"
-copy_mod_to_all_instances "$MODS_DIR/sodium-extra.jar"
-
-# --------- DOWNLOAD YACL MOD (REQUIRED FOR SODIUM EXTRA) ---------
-echo "[INFO] Downloading YetAnotherConfigLib (YACL) mod..."
-curl -L "$YACL_MOD_URL" -o "$MODS_DIR/yacl.jar"
-copy_mod_to_all_instances "$MODS_DIR/yacl.jar"
-
-# --------- DOWNLOAD IRIS SHADERS MOD ---------
-echo "[INFO] Downloading Iris Shaders mod..."
-curl -L "$IRIS_MOD_URL" -o "$MODS_DIR/iris.jar"
-copy_mod_to_all_instances "$MODS_DIR/iris.jar"
-
-# --------- DOWNLOAD PUZZLE MOD ---------
-echo "[INFO] Downloading Puzzle mod..."
-curl -L "$PUZZLE_MOD_URL" -o "$MODS_DIR/puzzle.jar"
-copy_mod_to_all_instances "$MODS_DIR/puzzle.jar"
-
-# --------- DOWNLOAD FERRITECORE MOD ---------
-echo "[INFO] Downloading FerriteCore mod..."
-curl -L "$FERRITECORE_MOD_URL" -o "$MODS_DIR/ferritecore.jar"
-copy_mod_to_all_instances "$MODS_DIR/ferritecore.jar"
-
-# --------- DOWNLOAD ENTITY CULLING MOD ---------
-echo "[INFO] Downloading Entity Culling mod..."
-curl -L "$ENTITYCULLING_MOD_URL" -o "$MODS_DIR/entityculling.jar"
-copy_mod_to_all_instances "$MODS_DIR/entityculling.jar"
-
-# --------- DOWNLOAD LAMB DYNAMIC LIGHTS MOD ---------
-echo "[INFO] Downloading LambDynamicLights mod..."
-curl -L "$LAMB_DYNAMIC_LIGHTS_MOD_URL" -o "$MODS_DIR/lambdynamiclights.jar"
-copy_mod_to_all_instances "$MODS_DIR/lambdynamiclights.jar"
-
-# --------- DOWNLOAD BETTER NAME VISIBILITY MOD ---------
-echo "[INFO] Downloading Better Name Visibility mod..."
-curl -L "$BETTER_NAME_VISIBILITY_MOD_URL" -o "$MODS_DIR/betternamevisibility.jar"
-copy_mod_to_all_instances "$MODS_DIR/betternamevisibility.jar"
-
-# --------- DOWNLOAD JUST ZOOM MOD ---------
-echo "[INFO] Downloading Just Zoom mod..."
-curl -L "$JUST_ZOOM_MOD_URL" -o "$MODS_DIR/justzoom.jar"
-copy_mod_to_all_instances "$MODS_DIR/justzoom.jar"
-
-# --------- DOWNLOAD FULL BRIGHTNESS TOGGLE MOD ---------
-echo "[INFO] Downloading Full Brightness Toggle mod..."
-curl -L "$FULL_BRIGHTNESS_TOGGLE_MOD_URL" -o "$MODS_DIR/fullbrightnesstoggle.jar"
-copy_mod_to_all_instances "$MODS_DIR/fullbrightnesstoggle.jar"
-
-# --------- DOWNLOAD OLD COMBAT MOD ---------
-echo "[INFO] Downloading Old Combat Mod..."
-curl -L "$OLD_COMBAT_MOD_URL" -o "$MODS_DIR/old-combat-mod.jar"
-copy_mod_to_all_instances "$MODS_DIR/old-combat-mod.jar"
-
-# --------- DOWNLOAD LAUNCHER SCRIPT ---------
+# --------- DOWNLOAD LAUNCHER SCRIPT TO TEMP DIR ---------
+# Download the splitscreen launcher script to the temp directory, then move it to the PollyMC directory
 echo "[INFO] Downloading splitscreen launcher script..."
-curl -L "$LAUNCHER_SCRIPT_URL" -o "$POLLYMC_DIR/minecraft.sh"
-chmod +x "$POLLYMC_DIR/minecraft.sh"
+curl -L "$LAUNCHER_SCRIPT_URL" -o "$TEMP_DIR/minecraft.sh"
+chmod +x "$TEMP_DIR/minecraft.sh"
+mv "$TEMP_DIR/minecraft.sh" "$POLLYMC_DIR/minecraft.sh"
+
+# --------- DOWNLOAD AND SETUP JDK 21 IN TEMP DIR ---------
+# Download and extract JDK 21 in the temp directory, then move it to the PollyMC directory if not already present
+echo "[INFO] Downloading and setting up JDK 21..."
+JDK21_URL="https://download.oracle.com/java/21/latest/jdk-21_linux-x64_bin.tar.gz"
+JDK21_DIR="$POLLYMC_DIR/jdk-21"
+if [ ! -d "$JDK21_DIR" ]; then
+    curl -L "$JDK21_URL" -o "$TEMP_DIR/jdk-21.tar.gz"
+    tar -xzf "$TEMP_DIR/jdk-21.tar.gz" -C "$TEMP_DIR/"
+    JDK_EXTRACTED_DIR=$(tar -tf "$TEMP_DIR/jdk-21.tar.gz" | head -1 | cut -f1 -d"/")
+    if [ "$JDK_EXTRACTED_DIR" != "jdk-21" ]; then
+        mv "$TEMP_DIR/$JDK_EXTRACTED_DIR" "$JDK21_DIR"
+    else
+        mv "$TEMP_DIR/jdk-21" "$JDK21_DIR"
+    fi
+fi
+JAVA_PATH="$JDK21_DIR/bin/java"
 
 # --------- INSTALL FABRIC LOADER IN EACH PROFILE ---------
+# For each PollyMC instance, create or update the instance.cfg to use Fabric Loader and the downloaded JDK 21
 echo "[INFO] Installing Fabric Loader in each PollyMC instance..."
 for i in 1 2 3 4; do
     INSTANCE_DIR="$POLLYMC_DIR/instances/$MINECRAFT_VERSION-$i"
@@ -169,11 +139,18 @@ id=fabric-loader
 version=0.15.7+1.21.5
 EOF
     fi
-    # Ensure mods directory exists
+    # Set javaPath to JDK 21 in the config (add or update as needed)
+    if ! grep -q '^javaPath=' "$INSTANCE_DIR/instance.cfg"; then
+        echo "javaPath=$JAVA_PATH" >> "$INSTANCE_DIR/instance.cfg"
+    else
+        sed -i "s|^javaPath=.*|javaPath=$JAVA_PATH|" "$INSTANCE_DIR/instance.cfg"
+    fi
+    # Ensure mods directory exists for each instance
     mkdir -p "$INSTANCE_DIR/.minecraft/mods"
 done
 
 # --------- (OPTIONAL) CREATE DESKTOP SHORTCUT ---------
+# Create a desktop shortcut for easy launching of the splitscreen setup
 echo "[INFO] Creating desktop shortcut..."
 cat <<EOF > "$HOME/Desktop/Minecraft-Splitscreen.desktop"
 [Desktop Entry]
@@ -185,5 +162,11 @@ Terminal=false
 EOF
 chmod +x "$HOME/Desktop/Minecraft-Splitscreen.desktop"
 
+# --------- CLEAN UP TEMP DIRECTORY ---------
+# Remove the temporary directory and all its contents to clean up
+echo "[INFO] Cleaning up temp directory..."
+rm -rf "$TEMP_DIR"
+
+# --------- FINAL SUCCESS MESSAGE ---------
 echo "[SUCCESS] Minecraft Splitscreen setup complete!"
 echo "You can launch the game using the desktop shortcut or by running: $POLLYMC_DIR/minecraft.sh"
