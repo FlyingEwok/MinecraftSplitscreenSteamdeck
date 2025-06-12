@@ -56,7 +56,7 @@ ________EOF
     fi
 
     for i in {1..4}; do
-        DEST="instances/1.21.5-$i"
+        DEST="$targetDir/instances/1.21.5-$i"
         rm -rf "$DEST"
         cp -a "$TEMPLATE_INSTANCE" "$DEST"
         # Update instance.cfg name for each instance
