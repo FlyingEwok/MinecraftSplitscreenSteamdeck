@@ -163,8 +163,10 @@ EOF
 
 done
 
-# --- Copy accounts.json ---
-cp "$(dirname "$0")/accounts.json" "$POLLYMC_DIR/accounts.json"
+# --- Copy or create accounts.json ---
+if [ ! -f "$POLLYMC_DIR/accounts.json" ]; then
+  echo '[{"type":"offline","username":"Player1","uuid":"00000000-0000-0000-0000-000000000001"}]' > "$POLLYMC_DIR/accounts.json"
+fi
 
 # --- Download launcher script ---
 wget -O "$POLLYMC_DIR/minecraft.sh" https://raw.githubusercontent.com/FlyingEwok/MinecraftSplitscreenSteamdeck/main/minecraft.sh
