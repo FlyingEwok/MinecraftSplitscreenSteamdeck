@@ -251,7 +251,6 @@ isSteamDeckGameMode() {
     return 1
 }
 
-# test etst
 
 # =============================
 # MAIN LOGIC: Entry Point
