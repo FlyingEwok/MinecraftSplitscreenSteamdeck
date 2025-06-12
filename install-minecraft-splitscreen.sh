@@ -98,8 +98,8 @@ if [[ "$add_to_steam" =~ ^[Yy]$ ]]; then
             sleep 1
         done
         [ -f $targetDir/shortcuts-backup.tar.xz ] || tar cJf $targetDir/shortcuts-backup.tar.xz ~/.steam/steam/userdata/*/config/shortcuts.vdf
-        # Use local patched add-to-steam.py instead of downloading
-        python "$PWD/add-to-steam.py"
+        # Download and run the latest add-to-steam.py from the official repo for standalone use
+        curl -sSL https://raw.githubusercontent.com/FlyingEwok/MinecraftSplitscreenSteamdeck/main/add-to-steam.py | python3 -
         nohup steam &
     else
         echo "Minecraft launch wrapper already present in Steam shortcuts."
