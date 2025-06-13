@@ -285,4 +285,7 @@ else
     wait
 fi
 
+# Test line to verify self-update mechanism
+echo "[TEST] Self-update test code executed."
+
 
