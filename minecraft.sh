@@ -60,39 +60,6 @@ selfUpdate() {
     fi
 }
 
-selfUpdatesss() {
-    local repo_url="https://raw.githubusercontent.com/FlyingEwok/MinecraftSplitscreenSteamdeck/main/minecraft.sh"
-    local tmpfile
-    tmpfile=$(mktemp)
-    local script_path
-    script_path="$(readlink -f "$0")"
-    # Download the latest version
-    if ! curl -fsSL "$repo_url" -o "$tmpfile"; then
-        echo "[Self-Update] Failed to check for updates." >&2
-        rm -f "$tmpfile"
-        return
-    fi
-    # Compare files byte-for-byte
-    if ! cmp -s "$tmpfile" "$script_path"; then
-        echo "[Self-Update] A new version is available. Update now? [y/N]"
-        read -r answer
-        if [[ "$answer" =~ ^[Yy]$ ]]; then
-            echo "[Self-Update] Updating..."
-            cp "$tmpfile" "$script_path"
-            chmod +x "$script_path"
-            rm -f "$tmpfile"
-            echo "[Self-Update] Update complete. Restarting..."
-            exec "$script_path" "$@"
-        else
-            echo "[Self-Update] Update skipped by user."
-            rm -f "$tmpfile"
-        fi
-    else
-        rm -f "$tmpfile"
-        echo "[Self-Update] Already up to date."
-    fi
-}
-
 # Call selfUpdate at the very start of the script
 selfUpdate
 
