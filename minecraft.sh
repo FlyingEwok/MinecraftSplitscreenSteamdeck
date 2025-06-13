@@ -105,7 +105,12 @@ EOF
 #   $1 = PollyMC instance name (e.g., 1.21.5-1)
 #   $2 = Player name (e.g., P1)
 launchGame() {
-    kde-inhibit --power --screenSaver --colorCorrect --notifications ~/.local/share/PollyMC/PollyMC-Linux-x86_64.AppImage -l "$1" -a "$2" &
+    if command -v kde-inhibit >/dev/null 2>&1; then
+        kde-inhibit --power --screenSaver --colorCorrect --notifications ~/.local/share/PollyMC/PollyMC-Linux-x86_64.AppImage -l "$1" -a "$2" &
+    else
+        echo "[Warning] kde-inhibit not found. Running PollyMC without KDE inhibition."
+        ~/.local/share/PollyMC/PollyMC-Linux-x86_64.AppImage -l "$1" -a "$2" &
+    fi
     sleep 10 # Give time for the instance to start (avoid race conditions)
 }
 
@@ -115,16 +120,19 @@ launchGame() {
 # Kills all plasmashell processes to remove KDE panels and widgets. This is a brute-force workaround
 # that works even in nested Plasma Wayland sessions, where scripting APIs may not work.
 hidePanels() {
-    # Attempt to kill all plasmashell processes for the current user/session
-    pkill plasmashell
-    sleep 1
-    if pgrep -u "$USER" plasmashell >/dev/null; then
-        killall plasmashell
+    if command -v plasmashell >/dev/null 2>&1; then
+        pkill plasmashell
         sleep 1
-    fi
-    if pgrep -u "$USER" plasmashell >/dev/null; then
-        pkill -9 plasmashell
-        sleep 1
+        if pgrep -u "$USER" plasmashell >/dev/null; then
+            killall plasmashell
+            sleep 1
+        fi
+        if pgrep -u "$USER" plasmashell >/dev/null; then
+            pkill -9 plasmashell
+            sleep 1
+        fi
+    else
+        echo "[Info] plasmashell not found. Skipping KDE panel hiding."
     fi
 }
 
@@ -133,8 +141,12 @@ hidePanels() {
 # =============================
 # Restarts plasmashell to restore all KDE panels and widgets after gameplay.
 restorePanels() {
-    nohup plasmashell >/dev/null 2>&1 &
-    sleep 2
+    if command -v plasmashell >/dev/null 2>&1; then
+        nohup plasmashell >/dev/null 2>&1 &
+        sleep 2
+    else
+        echo "[Info] plasmashell not found. Skipping KDE panel restore."
+    fi
 }
 
 # =============================
