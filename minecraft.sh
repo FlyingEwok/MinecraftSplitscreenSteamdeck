@@ -43,6 +43,9 @@ selfUpdate() {
     local remote_hash local_hash
     remote_hash=$(sha256sum "$tmpfile" | awk '{print $1}')
     local_hash=$(sha256sum "$script_path" | awk '{print $1}')
+    echo "[Self-Update DEBUG] Remote hash: $remote_hash"
+    echo "[Self-Update DEBUG] Local hash:  $local_hash"
+    echo "[Self-Update DEBUG] Script path:  $script_path"
     if [ "$remote_hash" != "$local_hash" ]; then
         echo "[Self-Update] New version found. Updating..."
         cp "$tmpfile" "$script_path"
@@ -52,7 +55,7 @@ selfUpdate() {
         exec "$script_path" "$@"
     else
         rm -f "$tmpfile"
-        # echo "[Self-Update] Already up to date."
+        echo "[Self-Update] Already up to date."
     fi
 }
 
