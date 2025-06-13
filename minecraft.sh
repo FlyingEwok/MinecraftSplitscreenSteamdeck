@@ -291,6 +291,13 @@ isSteamDeckGameMode() {
     return 1
 }
 
+# =============================
+# Always remove the autostart file on script exit to prevent unwanted autostart on boot
+cleanup_autostart() {
+    rm -f "$HOME/.config/autostart/minecraft-launch.desktop"
+}
+trap cleanup_autostart EXIT
+
 
 # =============================
 # MAIN LOGIC: Entry Point
