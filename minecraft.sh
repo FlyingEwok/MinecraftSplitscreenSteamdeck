@@ -42,7 +42,7 @@ selfUpdate() {
         echo "[Self-Update] New version found. Updating..."
         # Overwrite the current script in place (preserve permissions)
         cp "$tmpfile" "$0"
-        chmod --reference="$0" "$tmpfile"
+        chmod --reference="$tmpfile" "$0"
         rm -f "$tmpfile"
         echo "[Self-Update] Update complete. Restarting..."
         exec "$0" "$@"
