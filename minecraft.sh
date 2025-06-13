@@ -39,8 +39,11 @@ selfUpdate() {
         rm -f "$tmpfile"
         return
     fi
-    # Compare contents using sha256sum
-    if [ "$(sha256sum < "$tmpfile")" != "$(sha256sum < "$script_path")" ]; then
+    # Compare contents using sha256sum (hash only)
+    local remote_hash local_hash
+    remote_hash=$(sha256sum "$tmpfile" | awk '{print $1}')
+    local_hash=$(sha256sum "$script_path" | awk '{print $1}')
+    if [ "$remote_hash" != "$local_hash" ]; then
         echo "[Self-Update] New version found. Updating..."
         cp "$tmpfile" "$script_path"
         chmod +x "$script_path"
@@ -278,5 +281,4 @@ else
     wait
 fi
 
-echo "[TEST] This is a test line for selfUpdate. Please remove after testing."
 
