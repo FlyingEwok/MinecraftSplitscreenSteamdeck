@@ -107,3 +107,53 @@ if [[ "$add_to_steam" =~ ^[Yy]$ ]]; then
 else
     echo "Skipping adding Minecraft launch wrapper to Steam."
 fi
+
+# --- Optionally create a .desktop launcher ---
+# Prompt the user to create a desktop launcher for Minecraft Splitscreen
+read -p "Do you want to create a desktop launcher for Minecraft Splitscreen? [y/N]: " create_desktop
+if [[ "$create_desktop" =~ ^[Yy]$ ]]; then
+    # Set the .desktop file name and paths
+    DESKTOP_FILE_NAME="MinecraftSplitscreen.desktop"
+    DESKTOP_FILE_PATH="$HOME/Desktop/$DESKTOP_FILE_NAME"
+    APP_DIR="$HOME/.local/share/applications"
+    mkdir -p "$APP_DIR" # Ensure the applications directory exists
+    # --- Icon Handling ---
+    # Use the same icon as the Steam shortcut (SteamGridDB icon)
+    ICON_DIR="$targetDir/icons"
+    ICON_PATH="$ICON_DIR/minecraft-splitscreen-steamgriddb.ico"
+    ICON_URL="https://cdn2.steamgriddb.com/icon/add7a048049671970976f3e18f21ade3.ico"
+    mkdir -p "$ICON_DIR" # Ensure the icon directory exists
+    # Download the icon if it doesn't already exist
+    if [ ! -f "$ICON_PATH" ]; then
+        wget -O "$ICON_PATH" "$ICON_URL"
+    fi
+    # Determine which icon to use for the .desktop file
+    if [ -f "$ICON_PATH" ]; then
+        ICON_DESKTOP="$ICON_PATH" # Use the downloaded SteamGridDB icon
+    elif [ -f "$targetDir/instances/1.21.5-1/icon.png" ]; then
+        ICON_DESKTOP="$targetDir/instances/1.21.5-1/icon.png" # Fallback: use PollyMC instance icon
+    else
+        ICON_DESKTOP=application-x-executable # Fallback: use a generic system icon
+    fi
+    # --- Create the .desktop file ---
+    # This file allows launching Minecraft Splitscreen from the desktop and application menu
+    cat <<EOF > "$DESKTOP_FILE_PATH"
+[Desktop Entry]
+Type=Application
+Name=Minecraft Splitscreen
+Comment=Launch Minecraft in splitscreen mode with PollyMC
+Exec=$targetDir/minecraft.sh
+Icon=$ICON_DESKTOP
+Terminal=false
+Categories=Game;
+EOF
+    # Make the .desktop file executable (required for some desktop environments)
+    chmod +x "$DESKTOP_FILE_PATH"
+    # Copy the .desktop file to the applications directory so it appears in the app menu
+    cp "$DESKTOP_FILE_PATH" "$APP_DIR/$DESKTOP_FILE_NAME"
+    # Update the desktop database (if available) to register the new launcher
+    update-desktop-database "$APP_DIR" 2>/dev/null || true
+    echo "Desktop launcher created at $DESKTOP_FILE_PATH and added to application menu."
+else
+    echo "Skipping desktop launcher creation."
+fi
