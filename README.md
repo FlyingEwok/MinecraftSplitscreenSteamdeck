@@ -13,6 +13,7 @@ This project provides an easy way to set up splitscreen Minecraft on Steam Deck 
 ## Requirements
 - **Java 21** (OpenJDK 21)
 - Linux (Steam Deck or any modern distro)
+- *Steam Deck users: For proper controller counting, you must disable the built-in Steam Deck controller when an external controller is connected. See [Steam-Deck.Auto-Disable-Steam-Controller](https://github.com/scawp/Steam-Deck.Auto-Disable-Steam-Controller).* 
 
 ## What gets installed
 - [PollyMC](https://github.com/fn2006/PollyMC) AppImage
@@ -58,6 +59,7 @@ This project provides an easy way to set up splitscreen Minecraft on Steam Deck 
 - Launch the game from Steam, your desktop menu, or the generated desktop shortcut.
 - The script will detect controllers and launch the correct number of Minecraft instances.
 - On Steam Deck Game Mode, it will use a nested KDE session for best compatibility.
+- **Steam Deck users:** For proper controller counting, you must disable the built-in Steam Deck controller when an external controller is connected. Use [Steam-Deck.Auto-Disable-Steam-Controller](https://github.com/scawp/Steam-Deck.Auto-Disable-Steam-Controller) to automate this process.
 
 ## Troubleshooting
 - **Java 21 not found:**
