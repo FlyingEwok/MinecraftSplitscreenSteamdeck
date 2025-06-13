@@ -41,18 +41,25 @@ selfUpdate() {
     fi
     # Compare files byte-for-byte
     if ! cmp -s "$tmpfile" "$script_path"; then
-        # If not running in a terminal, relaunch in a terminal emulator for the update prompt
+        # --- Terminal Detection and Relaunch Logic ---
+        # If not running in an interactive shell (no $PS1), not launched by a terminal program, and not attached to a tty,
+        # then we are likely running from a GUI (e.g., .desktop launcher) and cannot prompt the user for input.
         if [ -z "$PS1" ] && [ -z "$TERM_PROGRAM" ] && ! tty -s; then
-            # Try to find a terminal emulator
+            # Try to find a terminal emulator to relaunch the script for the update prompt.
+            # This loop checks for common terminal emulators in order of preference.
             for term in x-terminal-emulator gnome-terminal konsole xfce4-terminal xterm; do
                 if command -v $term >/dev/null 2>&1; then
+                    # Relaunch this script in the found terminal emulator, passing all arguments.
                     exec $term -e "$script_path" "$@"
                 fi
             done
+            # If no terminal emulator is found, print an error and exit.
             echo "[Self-Update] Update available, but no terminal found for prompt. Please run this script from a terminal to update." >&2
             rm -f "$tmpfile"
             exit 1
         fi
+        # --- Interactive Update Prompt ---
+        # If we are running in a terminal, prompt the user for update confirmation.
         echo "[Self-Update] A new version is available. Update now? [y/N]"
         read -r answer
         if [[ "$answer" =~ ^[Yy]$ ]]; then
