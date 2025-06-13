@@ -13,22 +13,20 @@ pushd $targetDir
         chmod +x PollyMC-Linux-x86_64.AppImage
     fi
 
-    # Detect system Java (prefer Java 21, then Java 17, then system default)
-    # PollyMC requires Java 17 or 21 for modern Minecraft versions
+    # Detect system Java (require Java 21 for modern Minecraft versions)
+    # Only Java 21 is supported for new Minecraft versions
     if [ -x /usr/lib/jvm/java-21-openjdk/bin/java ]; then
         JAVA_PATH="/usr/lib/jvm/java-21-openjdk/bin/java"
-    elif [ -x /usr/lib/jvm/java-17-openjdk/bin/java ]; then
-        JAVA_PATH="/usr/lib/jvm/java-17-openjdk/bin/java"
     elif [ -x /usr/lib/jvm/default-runtime/bin/java ]; then
         JAVA_PATH="/usr/lib/jvm/default-runtime/bin/java"
     else
         JAVA_PATH="$(which java)"
     fi
 
-    # Check if Java is available and executable
+    # Check if Java 21 is available and executable
     # Exit with a clear error if not found
-    if [ -z "$JAVA_PATH" ] || [ ! -x "$JAVA_PATH" ]; then
-        echo "Error: Java 17 or 21 is not installed or not found in a standard location. Please install OpenJDK 17 or 21 with: sudo pacman -S jdk21-openjdk jdk17-openjdk" >&2
+    if [ -z "$JAVA_PATH" ] || ! "$JAVA_PATH" -version 2>&1 | grep -q '21'; then
+        echo "Error: Java 21 is not installed or not found in a standard location. Please install OpenJDK 21 with: sudo pacman -S jdk21-openjdk" >&2
         exit 1
     fi
 
