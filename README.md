@@ -36,7 +36,7 @@ This project provides an easy way to set up splitscreen Minecraft on Steam Deck 
   - [Sodium Extra](https://modrinth.com/mod/sodium-extra)
   - [Sodium Extras](https://modrinth.com/mod/sodium-extras)
   - [Sodium Options API](https://modrinth.com/mod/sodium-options-api)
-  - [Splitscreen Support](https://modrinth.com/mod/splitscreen-support) (preconfigured for 1–4 players)
+  - [Splitscreen Support](https://modrinth.com/mod/splitscreen) (preconfigured for 1–4 players)
   - [YetAnotherConfigLib](https://modrinth.com/mod/yacl)
 
 ## Installation
