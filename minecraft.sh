@@ -51,7 +51,7 @@ selfUpdate() {
         # echo "[Self-Update] Already up to date."
     fi
 }
-
+#Test line to ensure selfUpdate works correctly
 # Call selfUpdate at the very start of the script
 selfUpdate
 
