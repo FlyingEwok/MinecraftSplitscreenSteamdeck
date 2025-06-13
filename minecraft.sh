@@ -278,3 +278,5 @@ else
     wait
 fi
 
+echo "[TEST] This is a test line for selfUpdate. Please remove after testing."
+
