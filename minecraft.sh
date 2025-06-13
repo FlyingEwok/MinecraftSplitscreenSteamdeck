@@ -39,20 +39,21 @@ selfUpdate() {
         rm -f "$tmpfile"
         return
     fi
-    # Compare contents using sha256sum (hash only)
-    local remote_hash local_hash
-    remote_hash=$(sha256sum "$tmpfile" | awk '{print $1}')
-    local_hash=$(sha256sum "$script_path" | awk '{print $1}')
-    echo "[Self-Update DEBUG] Remote hash: $remote_hash"
-    echo "[Self-Update DEBUG] Local hash:  $local_hash"
-    echo "[Self-Update DEBUG] Script path:  $script_path"
-    if [ "$remote_hash" != "$local_hash" ]; then
-        echo "[Self-Update] New version found. Updating..."
-        cp "$tmpfile" "$script_path"
-        chmod +x "$script_path"
-        rm -f "$tmpfile"
-        echo "[Self-Update] Update complete. Restarting..."
-        exec "$script_path" "$@"
+    # Compare files byte-for-byte
+    if ! cmp -s "$tmpfile" "$script_path"; then
+        echo "[Self-Update] A new version is available. Update now? [y/N]"
+        read -r answer
+        if [[ "$answer" =~ ^[Yy]$ ]]; then
+            echo "[Self-Update] Updating..."
+            cp "$tmpfile" "$script_path"
+            chmod +x "$script_path"
+            rm -f "$tmpfile"
+            echo "[Self-Update] Update complete. Restarting..."
+            exec "$script_path" "$@"
+        else
+            echo "[Self-Update] Update skipped by user."
+            rm -f "$tmpfile"
+        fi
     else
         rm -f "$tmpfile"
         echo "[Self-Update] Already up to date."
