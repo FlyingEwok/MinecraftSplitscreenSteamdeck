@@ -12,8 +12,8 @@ darknessEffectScale:1.0
 glintSpeed:0.5
 glintStrength:0.6262394586382287
 prioritizeChunkUpdates:0
-fullscreen:false
-gamma:15.0
+fullscreen:true
+gamma:0.6
 graphicsMode:1
 guiScale:4
 maxFps:120
