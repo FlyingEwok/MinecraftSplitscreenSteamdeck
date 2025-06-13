@@ -31,21 +31,22 @@ selfUpdate() {
     local repo_url="https://raw.githubusercontent.com/FlyingEwok/MinecraftSplitscreenSteamdeck/main/minecraft.sh"
     local tmpfile
     tmpfile=$(mktemp)
+    local script_path
+    script_path="$(readlink -f "$0")"
     # Download the latest version
     if ! curl -fsSL "$repo_url" -o "$tmpfile"; then
         echo "[Self-Update] Failed to check for updates." >&2
         rm -f "$tmpfile"
         return
     fi
-    # Compare with current script
-    if ! cmp -s "$tmpfile" "$0"; then
+    # Compare contents using sha256sum
+    if [ "$(sha256sum < "$tmpfile")" != "$(sha256sum < "$script_path")" ]; then
         echo "[Self-Update] New version found. Updating..."
-        # Overwrite the current script in place and ensure it is executable
-        cp "$tmpfile" "$0"
-        chmod +x "$0"
+        cp "$tmpfile" "$script_path"
+        chmod +x "$script_path"
         rm -f "$tmpfile"
         echo "[Self-Update] Update complete. Restarting..."
-        exec "$0" "$@"
+        exec "$script_path" "$@"
     else
         rm -f "$tmpfile"
         # echo "[Self-Update] Already up to date."
