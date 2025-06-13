@@ -13,7 +13,30 @@ This project provides an easy way to set up splitscreen Minecraft on Steam Deck 
 ## Requirements
 - **Java 21** (OpenJDK 21)
 - Linux (Steam Deck or any modern distro)
-- [PollyMC](https://github.com/fn2006/PollyMC) AppImage (downloaded automatically)
+
+## What gets installed
+- [PollyMC](https://github.com/fn2006/PollyMC) AppImage
+- **Minecraft version:** 1.21.5 (with 4 separate instances for splitscreen)
+- **Mods included:**
+  - [Better Name Visibility](https://modrinth.com/mod/better-name-visibility)
+  - [Collective](https://modrinth.com/mod/collective)
+  - [Controllable](https://www.curseforge.com/minecraft/mc-mods/controllable)
+  - [Fabric API](https://modrinth.com/mod/fabric-api)
+  - [Framework](https://www.curseforge.com/minecraft/mc-mods/framework)
+  - [Full Brightness Toggle](https://modrinth.com/mod/full-brightness-toggle)
+  - [In-Game Account Switcher](https://modrinth.com/mod/in-game-account-switcher)
+  - [Just Zoom](https://modrinth.com/mod/just-zoom)
+  - [Konkrete](https://modrinth.com/mod/konkrete)
+  - [Mod Menu](https://modrinth.com/mod/modmenu)
+  - [Old Combat Mod](https://modrinth.com/mod/old-combat-mod)
+  - [Reese's Sodium Options](https://modrinth.com/mod/reeses-sodium-options)
+  - [Sodium](https://modrinth.com/mod/sodium)
+  - [Sodium Dynamic Lights](https://modrinth.com/mod/sodium-dynamic-lights)
+  - [Sodium Extra](https://modrinth.com/mod/sodium-extra)
+  - [Sodium Extras](https://modrinth.com/mod/sodium-extras)
+  - [Sodium Options API](https://modrinth.com/mod/sodium-options-api)
+  - [Splitscreen Support](https://modrinth.com/mod/splitscreen-support) (preconfigured for 1–4 players)
+  - [YetAnotherConfigLib](https://modrinth.com/mod/yacl)
 
 ## Installation
 1. **Install Java 21**
