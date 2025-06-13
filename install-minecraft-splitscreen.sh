@@ -26,7 +26,7 @@ pushd $targetDir
     # Check if Java 21 is available and executable
     # Exit with a clear error if not found
     if [ -z "$JAVA_PATH" ] || ! "$JAVA_PATH" -version 2>&1 | grep -q '21'; then
-        echo "Error: Java 21 is not installed or not found in a standard location. Please install OpenJDK 21 with: sudo pacman -S jdk21-openjdk" >&2
+        echo "Error: Java 21 is not installed or not found in a standard location. Refer to the README at https://github.com/FlyingEwok/MinecraftSplitscreenSteamdeck for installation instructions." >&2
         exit 1
     fi
 
