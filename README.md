@@ -1,6 +1,6 @@
 # Minecraft Splitscreen Steam Deck & Linux Installer
 
-This project provides an easy way to set up splitscreen Minecraft on Steam Deck and Linux using PollyMC. It supports 1–4 players, controller detection, and seamless integration with Steam and your desktop environment.
+This project provides an easy way to set up splitscreen Minecraft on Steam Deck and Linux using PollyMC. It supports 1–4 players, controller detection, and seamless integration with Steam Game Mode and your desktop environment.
 
 ## Features
 - Launch 1–4 Minecraft instances in splitscreen mode
@@ -21,6 +21,7 @@ This project provides an easy way to set up splitscreen Minecraft on Steam Deck 
    - For Arch: `sudo pacman -S jdk21-openjdk`
    - For Debian/Ubuntu: `sudo apt install openjdk-21-jre`
 2. **Download and run the installer:**
+   - You can get the latest installer script from the [Releases section](https://github.com/FlyingEwok/MinecraftSplitscreenSteamdeck/releases) (recommended for stable versions), or use the latest development version with:
    ```sh
    wget https://raw.githubusercontent.com/FlyingEwok/MinecraftSplitscreenSteamdeck/main/install-minecraft-splitscreen.sh
    chmod +x install-minecraft-splitscreen.sh
