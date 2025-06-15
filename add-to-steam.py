@@ -17,7 +17,7 @@ import urllib.request
 # --- Config: Set up paths and app info dynamically for the current user ---
 HOME = os.path.expanduser("~")  # Get the current user's home directory
 APPNAME  = "Minecraft Splitscreen"  # Name as it will appear in Steam
-EXE      = f'{HOME}/.local/share/PollyMC/minecraft.sh'  # Path to the launch script
+EXE      = f'{HOME}/.local/share/PollyMC/minecraftSplitscreen.sh'  # Path to the launch script
 STARTDIR = f"{HOME}/.local/share/PollyMC"  # Working directory for the shortcut
 
 # SteamGridDB artwork URLs for custom grid images, hero, logo, and icon

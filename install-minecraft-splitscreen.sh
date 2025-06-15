@@ -67,11 +67,11 @@ ________EOF
     # Clone the template instance 4 times for splitscreen play
     # Each instance gets a unique name in its instance.cfg
     for i in {1..4}; do
-        DEST="$targetDir/instances/1.21.5-$i"
+        DEST="$targetDir/instances/latestUpdate-$i"
         rm -rf "$DEST"
         cp -a "$targetDir/$TEMPLATE_INSTANCE" "$DEST"
         # Update instance.cfg name for each instance
-        sed -i "s/^name=.*/name=1.21.5-$i/" "$DEST/instance.cfg"
+        sed -i "s/^name=.*/name=latestUpdate-$i/" "$DEST/instance.cfg"
     done
 
     # --- Download accounts.json for splitscreen ---
@@ -80,9 +80,9 @@ ________EOF
 
     # Download the launch wrapper script
     # This script is used to launch Minecraft from Steam for splitscreen
-    rm -f minecraft.sh
-    wget https://raw.githubusercontent.com/FlyingEwok/MinecraftSplitscreenSteamdeck/main/minecraft.sh
-    chmod +x minecraft.sh
+    rm -f minecraftSplitscreen.sh
+    wget https://raw.githubusercontent.com/FlyingEwok/MinecraftSplitscreenSteamdeck/main/minecraftSplitscreen.sh
+    chmod +x minecraftSplitscreen.sh
 
 popd
 
@@ -128,8 +128,8 @@ if [[ "$create_desktop" =~ ^[Yy]$ ]]; then
     # Determine which icon to use for the .desktop file
     if [ -f "$ICON_PATH" ]; then
         ICON_DESKTOP="$ICON_PATH" # Use the downloaded SteamGridDB icon
-    elif [ -f "$targetDir/instances/1.21.5-1/icon.png" ]; then
-        ICON_DESKTOP="$targetDir/instances/1.21.5-1/icon.png" # Fallback: use PollyMC instance icon
+    elif [ -f "$targetDir/instances/latestUpdate-1/icon.png" ]; then
+        ICON_DESKTOP="$targetDir/instances/latestUpdate-1/icon.png" # Fallback: use PollyMC instance icon
     else
         ICON_DESKTOP=application-x-executable # Fallback: use a generic system icon
     fi
@@ -140,7 +140,7 @@ if [[ "$create_desktop" =~ ^[Yy]$ ]]; then
 Type=Application
 Name=Minecraft Splitscreen
 Comment=Launch Minecraft in splitscreen mode with PollyMC
-Exec=$targetDir/minecraft.sh
+Exec=$targetDir/minecraftSplitscreen.sh
 Icon=$ICON_DESKTOP
 Terminal=false
 Categories=Game;

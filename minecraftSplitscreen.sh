@@ -29,7 +29,7 @@ export target=/tmp
 # =============================
 # Checks if this script is the latest version from GitHub. If not, downloads and replaces itself.
 selfUpdate() {
-    local repo_url="https://raw.githubusercontent.com/FlyingEwok/MinecraftSplitscreenSteamdeck/main/minecraft.sh"
+    local repo_url="https://raw.githubusercontent.com/FlyingEwok/MinecraftSplitscreenSteamdeck/main/minecraftSplitscreen.sh"
     local tmpfile
     tmpfile=$(mktemp)
     local script_path

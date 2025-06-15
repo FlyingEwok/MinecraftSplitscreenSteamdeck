@@ -5,7 +5,7 @@
 !.gitignore
 !README.md
 !install-minecraft-splitscreen.sh
-!minecraft.sh
+!minecraftSplitscreen.sh
 !add-to-steam.py
 !accounts.json
 !sampleInstance/
