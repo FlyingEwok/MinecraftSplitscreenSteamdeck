@@ -12,3 +12,4 @@
 !sampleInstance/**
 !.github/
 !.github/**
+!token.enc
