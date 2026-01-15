@@ -22,7 +22,7 @@ download_prism_launcher() {
     # We specifically look for AppImage files in the release assets
     local prism_url
     prism_url=$(curl -s https://api.github.com/repos/PrismLauncher/PrismLauncher/releases/latest | \
-        jq -r '.assets[] | select(.name | test("AppImage$")) | .browser_download_url' | head -n1)
+        jq -r '.assets[] | select(.name | test("x86_64.*AppImage$")) | .browser_download_url' | head -n1)
     
     # Validate that we got a valid download URL
     if [[ -z "$prism_url" || "$prism_url" == "null" ]]; then
