@@ -190,7 +190,7 @@ source "$MODULES_DIR/main_workflow.sh"
 
 # Script configuration paths
 readonly TARGET_DIR="$HOME/.local/share/PrismLauncher"
-readonly POLLYMC_DIR="$HOME/.local/share/PollyMC"
+readonly POLLYMC_DIR="$HOME/.local/share/PolyMC"
 
 # Runtime variables (set during execution)
 JAVA_PATH=""
