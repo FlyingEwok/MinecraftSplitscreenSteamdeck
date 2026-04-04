@@ -46,7 +46,7 @@ Both launchers are essentially the same program with one key difference:
 This hybrid approach ensures reliable automated installation while providing the optimal splitscreen gaming experience.
 
 ## What gets installed
-- [PollyMC](https://github.com/fn2006/PollyMC) AppImage (primary launcher)
+- [PollyMC](https://github.com/SharathGames1/PollyMC) AppImage (primary launcher)
 - **Minecraft version:** User-selectable (defaults to latest stable release, with 4 separate instances for splitscreen)
 - **Fabric Loader:** Complete dependency chain including LWJGL 3, Minecraft, Intermediary Mappings, and Fabric Loader
 - **Mods included (automatically installed):**
@@ -192,7 +192,7 @@ To update your Minecraft version or mod configuration:
 ## Credits
 - Inspired by [ArnoldSmith86/minecraft-splitscreen](https://github.com/ArnoldSmith86/minecraft-splitscreen) (original concept/script, but this project is mostly a full rewrite).
 - Additional contributions by [FlyingEwok](https://github.com/FlyingEwok) and others.
-- Uses [PollyMC](https://github.com/fn2006/PollyMC) for gameplay and [PrismLauncher](https://github.com/PrismLauncher/PrismLauncher) for instance creation.
+- Uses [PollyMC](https://github.com/SharathGames1/PollyMC) for gameplay and [PrismLauncher](https://github.com/PrismLauncher/PrismLauncher) for instance creation.
 - Steam Deck Java installation script by [FlyingEwok](https://github.com/FlyingEwok/install-jdk-on-steam-deck) - provides seamless Java installation for Steam Deck's read-only filesystem with automatic version detection.
 - Steam Deck controller auto-disable tool by [scawp](https://github.com/scawp/Steam-Deck.Auto-Disable-Steam-Controller) - automatically disables built-in Steam Deck controller when external controllers are connected, essential for proper splitscreen controller counting.
 
