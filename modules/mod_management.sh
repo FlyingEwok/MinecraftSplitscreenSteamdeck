@@ -91,14 +91,24 @@ check_modrinth_mod() {
         # If we have a patch version (e.g. 1.21.6), check if it's higher than any available versions
         if [[ -n "$mc_patch_version" ]]; then
             # Check if there's a standalone major.minor version (e.g., "1.21" without patch)
-            local has_standalone_major_minor=$(printf "%s" "$version_json" | jq -r --arg major_minor "$mc_major_minor" '
-                .[] | select(.game_versions[] == $major_minor and (.loaders[] == "fabric")) | .version_number' 2>/dev/null | head -n1)
+            local has_standalone_major_minor
+            has_standalone_major_minor=$(printf "%s" "$version_json" | jq -r --arg major_minor "$mc_major_minor" '
+                .[]
+                | select((.loaders[]? == "fabric") and any(.game_versions[]?; . == $major_minor))
+                | .version_number' 2>/dev/null | head -n1)
             
             # Get the highest patch version available for this major.minor series
-            local highest_patch=$(printf "%s" "$version_json" | jq -r --arg major_minor "$mc_major_minor" '
-                [.[] | select(.game_versions[] | test("^" + $major_minor + "\\.[0-9]+$") and (.loaders[] == "fabric")) | 
-                 .game_versions[] | select(test("^" + $major_minor + "\\.[0-9]+$")) | 
-                 split(".")[2] | tonumber] | if length > 0 then max else empty end' 2>/dev/null)
+            local highest_patch
+            highest_patch=$(printf "%s" "$version_json" | jq -r --arg major_minor "$mc_major_minor" '
+                [
+                  .[]
+                  | select(.loaders[]? == "fabric")
+                  | .game_versions[]?
+                  | select(startswith($major_minor + ".") and (split(".") | length == 3))
+                  | (split(".")[2] | tonumber?)
+                ]
+                | map(select(. != null))
+                | if length > 0 then max else empty end' 2>/dev/null)
             
             # Don't try fallback if:
             # 1. There's a standalone major.minor version (e.g., "1.21") and we're requesting a patch version, OR
@@ -159,14 +169,24 @@ check_modrinth_mod() {
         # If we have a patch version, check if it's higher than any available versions
         if [[ -n "$mc_patch_version" ]]; then
             # Check if there's a standalone major.minor version (e.g., "1.21" without patch)
-            local has_standalone_major_minor=$(printf "%s" "$version_json" | jq -r --arg major_minor "$mc_major_minor" '
-                .[] | select(.game_versions[] == $major_minor and (.loaders[] == "fabric")) | .version_number' 2>/dev/null | head -n1)
+            local has_standalone_major_minor
+            has_standalone_major_minor=$(printf "%s" "$version_json" | jq -r --arg major_minor "$mc_major_minor" '
+                .[]
+                | select((.loaders[]? == "fabric") and any(.game_versions[]?; . == $major_minor))
+                | .version_number' 2>/dev/null | head -n1)
             
             # Get the highest patch version available for this major.minor series
-            local highest_patch=$(printf "%s" "$version_json" | jq -r --arg major_minor "$mc_major_minor" '
-                [.[] | select(.game_versions[] | test("^" + $major_minor + "\\.[0-9]+$") and (.loaders[] == "fabric")) | 
-                 .game_versions[] | select(test("^" + $major_minor + "\\.[0-9]+$")) | 
-                 split(".")[2] | tonumber] | if length > 0 then max else empty end' 2>/dev/null)
+            local highest_patch
+            highest_patch=$(printf "%s" "$version_json" | jq -r --arg major_minor "$mc_major_minor" '
+                [
+                  .[]
+                  | select(.loaders[]? == "fabric")
+                  | .game_versions[]?
+                  | select(startswith($major_minor + ".") and (split(".") | length == 3))
+                  | (split(".")[2] | tonumber?)
+                ]
+                | map(select(. != null))
+                | if length > 0 then max else empty end' 2>/dev/null)
             
             # Don't try fallback if:
             # 1. There's a standalone major.minor version (e.g., "1.21") and we're requesting a patch version, OR

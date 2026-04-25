@@ -22,7 +22,15 @@ download_prism_launcher() {
     # We specifically look for AppImage files in the release assets
     local prism_url
     prism_url=$(curl -s https://api.github.com/repos/PolyMC/PolyMC/releases/latest | \
-        jq -r '.assets[] | select((.name | test("AppImage$")) and (.name | test("x86_64|amd64"; "i"))) | .browser_download_url' | \
+        jq -r '.assets[]
+            | select(
+                (.name | ascii_downcase | endswith("appimage"))
+                and (
+                    (.name | ascii_downcase | contains("x86_64"))
+                    or (.name | ascii_downcase | contains("amd64"))
+                )
+            )
+            | .browser_download_url' | \
         head -n1)
     
     # Validate that we got a valid download URL
