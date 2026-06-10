@@ -314,6 +314,14 @@ fallback_dependencies() {
 # get_minecraft_version: Get target Minecraft version with intelligent compatibility checking
 # Only offers versions that support both Controllable and Splitscreen Support mods
 get_minecraft_version() {
+    # If MC_VERSION already set (e.g. by modpack detection), skip the picker
+    if [[ -n "${MC_VERSION:-}" ]]; then
+        echo ""
+        print_info "Minecraft version already selected: $MC_VERSION"
+        echo ""
+        return 0
+    fi
+    
     print_header "🎯 MINECRAFT VERSION SELECTION"
     
     # Get list of supported Minecraft versions
