@@ -66,10 +66,50 @@ main() {
     download_prism_launcher        # Download PolyMC AppImage for splitscreen launcher usage
     
     # =============================================================================
+    # MODPACK VERSION DETECTION (before MC version picker)
+    # =============================================================================
+    
+    # Ask about modpack early so it can set MC_VERSION before version selection
+    local modpack_selected=false
+    local modpack_install_id=""
+    echo ""
+    print_info "ℹ️  Do you want to install a modpack (e.g. Cobbleverse) on the splitscreen instances?"
+    print_info "   If yes, the modpack's target Minecraft version will be used automatically."
+    echo ""
+    local early_modpack_choice
+    read -r -p "Install modpack? [y/N]: " early_modpack_choice
+    if [[ "$early_modpack_choice" =~ ^[Yy]$ ]]; then
+        echo ""
+        print_info "Choose installation method:"
+        echo "1) Download from CurseForge (requires numeric ID, e.g. 1210677 for Cobbleverse)"
+        echo "2) Install from a local ZIP file"
+        read -r -p "Choose [1/2]: " early_install_method
+        
+        if [[ "$early_install_method" == "2" ]]; then
+            modpack_selected=true
+            # ZIP modpack — can't detect version early, user will handle during install
+            print_info "ZIP modpack selected — version will be checked during installation."
+        else
+            local early_modpack_id=""
+            print_info "Enter CurseForge modpack ID (default: 1210677 for Cobbleverse)"
+            read -r -p "Modpack ID [1210677]: " early_modpack_id
+            if [[ -z "$early_modpack_id" ]]; then
+                early_modpack_id="1210677"
+            fi
+            modpack_install_id="$early_modpack_id"
+            
+            # Detect modpack version and potentially set MC_VERSION
+            if detect_modpack_version "$early_modpack_id"; then
+                modpack_selected=true
+            fi
+        fi
+    fi
+    
+    # =============================================================================
     # VERSION DETECTION AND CONFIGURATION
     # =============================================================================
     
-    get_minecraft_version         # Determine target Minecraft version (user choice or latest)
+    get_minecraft_version         # Determine target Minecraft version (skip if already set by modpack)
     detect_java                   # Automatically detect, install, and configure correct Java version for selected Minecraft version
     configure_polymc_defaults     # Write launcher defaults so Quick Setup wizard is skipped
     get_fabric_version           # Get compatible Fabric loader version from API
@@ -111,6 +151,61 @@ main() {
     
     create_instances             # Create 4 splitscreen instances using manual configuration
     setup_splitscreen_launcher_script   # Install minecraftSplitscreen.sh into launcher directory
+    
+    # =============================================================================
+    # MODPACK INSTALLATION PHASE: Install modpack mods + overrides
+    # =============================================================================
+    
+    if [[ "$modpack_selected" == true && -n "$modpack_install_id" ]]; then
+        # Already configured early — install now
+        echo ""
+        print_info "Installing modpack (ID: $modpack_install_id) into all instances..."
+        install_modpack "$modpack_install_id" || print_warning "⚠️  Modpack installation had some issues"
+        
+    elif [[ "$modpack_selected" == true && -z "$modpack_install_id" ]]; then
+        # ZIP modpack was selected early — ask for path now
+        echo ""
+        read -r -p "Path to modpack ZIP file: " zip_path
+        if [[ -n "$zip_path" ]]; then
+            install_modpack_from_zip "$zip_path" || print_warning "⚠️  Modpack installation had some issues"
+        else
+            print_warning "No file specified, skipping modpack installation."
+        fi
+        
+    else
+        echo ""
+        print_info "ℹ️  Do you want to install a modpack (e.g. Cobbleverse) on the splitscreen instances?"
+        print_info "   The modpack will be applied to all 4 players."
+        echo ""
+        local install_modpack_choice
+        read -r -p "Install modpack? [y/N]: " install_modpack_choice
+        if [[ "$install_modpack_choice" =~ ^[Yy]$ ]]; then
+            echo ""
+            print_info "Choose installation method:"
+            echo "1) Download from CurseForge (requires numeric ID, e.g. 1210677 for Cobbleverse)"
+            echo "2) Install from a local ZIP file"
+            read -r -p "Choose [1/2]: " install_method
+            
+            if [[ "$install_method" == "2" ]]; then
+                echo ""
+                read -r -p "Path to modpack ZIP file: " zip_path
+                if [[ -n "$zip_path" ]]; then
+                    install_modpack_from_zip "$zip_path" || print_warning "⚠️  Modpack installation had some issues"
+                else
+                    print_warning "No file specified, skipping modpack installation."
+                fi
+            else
+                local modpack_id=""
+                echo ""
+                print_info "Enter CurseForge modpack ID (default: 1210677 for Cobbleverse)"
+                read -r -p "Modpack ID [1210677]: " modpack_id
+                if [[ -z "$modpack_id" ]]; then
+                    modpack_id="1210677"
+                fi
+                install_modpack "$modpack_id" || print_warning "⚠️  Modpack installation had some issues"
+            fi
+        fi
+    fi
     
     # =============================================================================
     # SYSTEM INTEGRATION PHASE: Optional platform integration
