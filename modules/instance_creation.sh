@@ -567,7 +567,7 @@ textBackgroundOpacity:0.5
 backgroundForChatOnly:true
 hideServerAddress:false
 advancedItemTooltips:false
-pauseOnLostFocus:true
+pauseOnLostFocus:false
 overrideWidth:0
 overrideHeight:0
 heldItemTooltips:true
